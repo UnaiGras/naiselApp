@@ -1,7 +1,8 @@
 import { useMutation } from "@apollo/client";
 import React, {useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, Image } from "react-native";
+import { View, Text, TextInput, StyleSheet,Button } from "react-native";
 import { LOGIN } from "./loginQueries";
+import { TouchableOpacity } from "react-native-gesture-handler";
 //hacer las querys para representar las paginas de usuario
 
 export default function Login1({navigation, setToken}) {
@@ -52,7 +53,18 @@ export default function Login1({navigation, setToken}) {
                   placeholderTextColor="#a565f2"
                   secureTextEntry
                 />
-                <Button title="Iniciar sesión" onPress={handleSubmit} color="#a565f2" />
+                <Button title="Iniciar sesión" onPress={handleSubmit} color="#a565f2"  />
+                <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  marginTop: 20
+                }}
+                  onPress={() => {
+                    navigation.navigate("Register")
+                  }}
+                >
+                  <Text>Registrarse</Text>
+                </TouchableOpacity>
             </View>
       </View>
     )
@@ -69,10 +81,11 @@ const styles = StyleSheet.create({
       width: '80%',
     },
     input: {
-      backgroundColor: '#ffffff',
-      marginBottom: 10,
+      backgroundColor: '#191919',
+      marginBottom: 20,
       paddingHorizontal: 10,
-      height: 40,
-      borderRadius: 5,
+      height: 50,
+      borderRadius: 8,
+      fontSize: 20
     },
   });

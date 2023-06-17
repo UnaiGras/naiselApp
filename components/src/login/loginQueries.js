@@ -9,14 +9,11 @@ export const LOGIN = gql`
 }
 `
 export const REGISTER = gql`
-mutation Mutation($username: String!, $email: String!, $password: String!, $name: String!, $phoneNumber: String!, $profilePhoto: String) {
-  addUser(username: $username, email: $email, password: $password, name: $name, phoneNumber: $phoneNumber, profilePhoto: $profilePhoto) {
-      id
-      email
-      eventMaker
-      name
-      username
-      walletAddress
-    }
+mutation Mutation($username: String, $email: String, $name: String, $profilePhoto: String, $password: String) {
+  addUser(username: $username, email: $email, name: $name, profilePhoto: $profilePhoto, password: $password) {
+    username
+    psswdHash
+    profilePhoto
   }
+}
 `

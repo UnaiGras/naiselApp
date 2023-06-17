@@ -3,10 +3,10 @@ import React, { useState, useEffect, createContext } from 'react'
 import { ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client'
 import Navigation from './navigation';
 import { createUploadLink } from 'apollo-upload-client';
-import Main from './src/components/eventMakerGestion/main';
 import { BaseToast, ErrorToast } from 'react-native-toast-message';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { StripeProvider } from '@stripe/stripe-react-native';
+import MainScreen from "./components/src/home/Main";
 
 
 export const AuthContext = createContext()
@@ -17,7 +17,7 @@ const App = () => {
   const [client, setClient] = useState(
     new ApolloClient({
     link: createUploadLink({
-      uri: 'http://192.168.0.13:4000/',
+      uri: 'http://192.168.1.19:4000/',
       headers: {
         'authorization': `bearer `
       }
@@ -69,7 +69,7 @@ const App = () => {
     setClient(
       new ApolloClient({
       link: createUploadLink({
-        uri: 'http://192.168.0.13:4000/',
+        uri: 'http://192.168.1.19:4000/',
         headers: {
           'authorization': `bearer ${token}`
         }
@@ -88,7 +88,7 @@ const App = () => {
         publishableKey="pk_test_51MXBeYIzb8Qf9yX4EKcfEtT0PWx9YLaxZLYq4q4vMa5Xy8KZtRh16wC3z66eVGYWeFut0A07T3T6sNdhVmlHGP4100g0Bs1LtG"
       >
           <Navigation>
-              <Main/>
+              <MainScreen/>
           </Navigation>
         <Toast config={toastConfig}/>
       </StripeProvider>

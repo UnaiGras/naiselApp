@@ -46,7 +46,7 @@ export default function Register({navigation}) {
     useEffect(() => {
         if(result.data){
             console.log(result.data)
-            navigation.navigate('Home')
+            navigation.navigate('MainScreen')
         }
     }, [result.data])
 
@@ -92,9 +92,9 @@ export default function Register({navigation}) {
     //    setError('');
     //    return true;
     //  };
-//
+    //
     ////	^([a-zA-Z0-9@*#]{8,15})$
-//
+    //
     //const validatePsswd = (email) => {
     //    const regex = /^([a-zA-Z0-9@*#]{8,22})$/;
     //    if (!email.match(regex)) {
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        backgroundColor: '#00c1b9',
+        backgroundColor: '#a565f2',
         marginVertical: 30,
         borderRadius: 15,
         width: "80%",
