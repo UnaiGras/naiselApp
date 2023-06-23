@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker'
 import { ScrollView } from "react-native";
+import { CREATE_PLAN } from "./planQuerys";
+import { useMutation } from "@apollo/client";
 
 export const CreatePlanForm = () => {
   const [planName, setPlanName] = useState("");
@@ -12,6 +14,12 @@ export const CreatePlanForm = () => {
   const [duration, setDuration] = useState("");
   const [type, setType] = useState("");
   const [image, setImage] = useState("");
+
+  const [create, {data}] = useMutation(CREATE_PLAN, {
+    onError: err => {
+      console.log(err)
+    }
+  }) 
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -61,6 +69,19 @@ export const CreatePlanForm = () => {
       type,
       image,
     });
+
+    create({
+      variables: {
+        planName: planName, 
+        description: description, 
+        context: context, 
+        price: parseFloat(price), 
+        duration: duration, 
+        type: type, 
+        photo: image
+      }
+    })
+
   };
 
   return (

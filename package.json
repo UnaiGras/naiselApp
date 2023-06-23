@@ -19,6 +19,7 @@
     "@stripe/stripe-react-native": "0.23.3",
     "apollo-upload-client": "^17.0.0",
     "expo": "~48.0.15",
+    "expo-av": "^13.2.1",
     "expo-barcode-scanner": "~12.3.2",
     "expo-build": "^0.0.0",
     "expo-document-picker": "^11.2.2",

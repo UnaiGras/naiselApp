@@ -1,7 +1,7 @@
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { REQUEST_PLAN } from './planQuerys';
+import { REQUEST_PLAN, SUBSCRIBE_TO_PLAN } from './planQuerys';
 
 const PlanScreen = ({ navigation, route}) => {
 
@@ -18,6 +18,12 @@ const PlanScreen = ({ navigation, route}) => {
         }
     })
 
+    const [subscribeToPlan, {data: response, loding}] = useMutation(SUBSCRIBE_TO_PLAN, {
+      onError: err => {
+        console.log(err)
+      }
+    })
+
     const handleAuthorProfilePress = () => {
         if (plan){
             navigation.navigate("NotProfileScreen", {userId: plan.author.id})
@@ -25,7 +31,11 @@ const PlanScreen = ({ navigation, route}) => {
     };
 
     const handleGetPlanPress = () => {
-      
+      subscribeToPlan({
+        variables: {
+          planId: planId
+        }
+      })
     };
 
     return (

@@ -1,15 +1,17 @@
 import React from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from "react-native";
 import {useQuery} from "@apollo/client"
 import { CHAT_LIST } from "./homeQuerys";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 
 export const ChatsList = ({navigation}) => {
 
     const {data} = useQuery(CHAT_LIST, {
         onError: err => {
-            console.log(err)
+            console.log(err, "ChatList")
+        },
+        onCompleted: info => {
+            console.log(info)
         }
     })
 
@@ -20,7 +22,7 @@ export const ChatsList = ({navigation}) => {
                     data={data.requestChats.chats}
                     renderItem={({ item }) => (
                         <TouchableOpacity>
-                            <ChatCard item={item}/>
+                            <ChatCard item={item} navigation={navigation}/>
                         </TouchableOpacity>
                     )}
                 />
@@ -39,38 +41,74 @@ export const ChatsList = ({navigation}) => {
     )
 }
 
-const ChatCard = ({item}) => {
+const ChatCard = ({item, navigation}) => {
     return(
-        <View style={styles.chatCard}>
-            <Image 
-                style={styles.photo}
-                source={{uri: item.plan.author.profilePhoto}}
-            />
-            <View>
-                <Text style={{fontSize: 20, fontWeight: "600"}}>{item.plan.name}</Text>
-                <Text style={{fontSize: 20, fontWeight: "600"}}></Text>
+        <TouchableOpacity
+        style={{paddingVertical: 10, marginVertical: 10}}
+        onPress={()=> {
+            navigation.navigate("ChatScreen", {
+                planId: item.plan.id
+            })
+        }}
+        >
+            <View style={styles.chatCard}>
+                <Image 
+                    style={styles.planPhoto}
+                    source={{uri: item.plan.photo}}
+                />
+                    <View style={styles.profileBox}>
+
+                        <Image 
+                            style={styles.photo}
+                            source={{uri: item.plan.author.profilePhoto}}
+                            />
+                        
+                            <Text style={{fontSize: 20, fontWeight: "600", marginLeft: 20}}>{item.plan.planName}</Text>
+                        <Text style={{fontSize: 16, fontWeight: "600", marginLeft: 20, color: "gray"}}>{item.plan.author.username}</Text>
+                    </View>
+                    <View style={{marginBottom: 15, marginTop: 5, marginHorizontal: 20,alignSelf: "flex-start"}}>
+                        <Text style={{color: "gray", fontSize: 14, fontWeight: "500"}}>
+                            {item.plan.description}
+                        </Text>
+                    </View>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 
 const styles = StyleSheet.create({
     chatCard: {
-        padding: 10,
+        borderRadius: 20,
+        backgroundColor: "#151515",
+        alignItems: "center",
+        width: "90%",
+        alignSelf: "center",
+        shadowColor: "#a565f2",
+        elevation: 6
+    },
+    profileBox: {
         borderRadius: 8,
         backgroundColor: "#151515",
-        marginVertical: 5,
+        marginVertical: 10,
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        width: "90%",
+        alignSelf: "center"
     },
     photo: {
-        borderRadius: 50,
-        height: 30,
-        width: 30
+        borderRadius: 100,
+        height: 40,
+        width: 40
     },
     noChatsText: {
         color: "gray",
         fontSize: 16,
         fontWeight: "700"
+    },
+    planPhoto: {
+        width: "100%",
+        height:  80,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20
     }
 })

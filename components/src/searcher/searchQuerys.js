@@ -8,9 +8,6 @@ query RequestTrendingPlans {
       photo
       price
       description
-      clients {
-        id
-      }
       author {
         name
         profilePhoto

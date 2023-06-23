@@ -26,7 +26,7 @@ const gettoken = async () => {
 
   
 
-const Main = ({ navigation, test}) => {
+const MainScreen = ({ navigation, test}) => {
     const [tokwen, setTokwen] = useState('') 
     const [token, setUserToken]= useContext(AuthContext)
 
@@ -110,21 +110,6 @@ const Main = ({ navigation, test}) => {
         {tokwen && data ? (
           <>
           <View style={{height: "100%"}}>
-            <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("ChatScreen")
-            }}
-              style={{
-                paddingVertical: 10,
-                marginVertical: 10,
-                backgroundColor: "#a565f2",
-                width: "90%",
-                alignItems: "center",
-                alignSelf: "center"
-              }}
-            >
-              <Text>Ver ChatScreen</Text>
-            </TouchableOpacity>
               <ChatsList navigation={navigation}/>
           </View>
                 <View>
@@ -288,4 +273,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Main
+export default MainScreen

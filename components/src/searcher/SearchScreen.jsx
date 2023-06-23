@@ -6,7 +6,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 export const SearchScreen = ({navigation}) => {
 
-    
     const [searchQuery, setSearchQuery] = useState("");
 
     const {data} = useQuery(TRENDING_PLANS, {
@@ -24,7 +23,7 @@ export const SearchScreen = ({navigation}) => {
     //);
 
     const renderGridItem = ({ item }) => {
-      const isPopular = item.clients.length >= 0;
+      //const isPopular = item.clients.length >= 0;
 
       return (
         <TouchableOpacity
