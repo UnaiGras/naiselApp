@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { ScrollView } from "react-native";
 import { CREATE_PLAN } from "./planQuerys";
 import { useMutation } from "@apollo/client";
+import SliderComponent from "./percentajeBar";
 
 export const CreatePlanForm = () => {
   const [planName, setPlanName] = useState("");
@@ -134,7 +135,7 @@ export const CreatePlanForm = () => {
           multiline
         />
       </View>
-
+                   <SliderComponent/>      
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}

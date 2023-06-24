@@ -140,11 +140,10 @@ export const ChatScreen = ({navigation, route}) => {
     <View style={styles.container}>
       { authorInfo &&
         <TouchableOpacity
-        onPress={() => getVoices("Hola buenas")}
-        //onPress={() => {
-        //    navigation.navigate("NotProfileScreen", {userId: authorInfo.userInfoByPlanId.id})
-        //  }
-        //}
+        onPress={() => {
+            navigation.navigate("NotProfileScreen", {userId: authorInfo.userInfoByPlanId.id})
+          }
+        }
           style={styles.profileBox}
         >
           <View style={{
