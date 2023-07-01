@@ -35,8 +35,8 @@ mutation SubscribeToPlan($planId: String) {
 `
 
 export const CREATE_PLAN = gql`
-mutation Mutation($planName: String, $description: String, $context: String, $price: Float, $duration: String, $type: String, $photo: String) {
-  createPlan(planName: $planName, description: $description, context: $context, price: $price, duration: $duration, type: $type, photo: $photo) {
+mutation CreatePlan($planName: String, $description: String, $context: String, $price: Float, $duration: String, $type: String, $photo: String, $planTokensLenght: Int) {
+  createPlan(planName: $planName, description: $description, context: $context, price: $price, duration: $duration, type: $type, photo: $photo, planTokensLenght: $planTokensLenght) {
     id
     name
     username

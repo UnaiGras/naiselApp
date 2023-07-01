@@ -48,7 +48,7 @@ const AppBar = ({data, navigation, position}) => {
                 }}
             >
                 {position === "home" ? (
-                <Ionicons name="home" size={25}/>
+                <Ionicons name="home" size={25} color="#a565f2"/>
                 ):(
                 <Ionicons name="home-outline" size={25}/>
                 )}

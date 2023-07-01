@@ -1,11 +1,14 @@
 import { useMutation, useQuery } from '@apollo/client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { REQUEST_PLAN, SUBSCRIBE_TO_PLAN } from './planQuerys';
+import AnimatedLottieView from "lottie-react-native";
 
 const PlanScreen = ({ navigation, route}) => {
 
     const [plan, setPlan] = useState(null)
+  const [loadingAnimation, setLoadingAnimation] = useState(false)
+
 
     const planId = route.params.data
 
@@ -37,6 +40,14 @@ const PlanScreen = ({ navigation, route}) => {
         }
       })
     };
+    useEffect(() => {
+      if (response){
+        setLoadingAnimation(true)
+        setTimeout(() => {
+          navigation.goBack()
+        }, 2000)
+      }
+    }, [response])
 
     return (
       <View style={styles.container}>
@@ -50,11 +61,33 @@ const PlanScreen = ({ navigation, route}) => {
             <Text style={styles.name}>{plan.planName}</Text>
             <Text style={styles.description}>{plan.description}</Text>
             <View style={{ alignItems: "center", marginVertical: 30}}>
-                <Text style={styles.price}>{plan.price}</Text>
+                <Text style={styles.price}>{plan.price} €</Text>
                 <TouchableOpacity style={styles.getPlanButton} onPress={handleGetPlanPress}>
                   <Text style={styles.getPlanButtonText}>Obtener plan</Text>
                 </TouchableOpacity>
             </View>
+            { loadingAnimation === true &&
+                <View style={{
+                  position: "absolute", 
+                  padding: 10, 
+                  backgroundColor: "#191919", 
+                  bottom: "50%", 
+                  alignSelf: "center", 
+                  borderRadius: 20, 
+                  alignItems: "center"
+              }}>
+                  <AnimatedLottieView
+                      source={require("../../../assets/96085-green-check.json")}
+                      autoPlay={loadingAnimation}
+                      loop={false}
+                      style={{
+                          height: 100,
+                          width: 100
+                      }}
+                  />
+                  <Text style={{fontWeight: "800", fontStyle: "italic"}}>Compra realizada con exito.</Text>
+              </View>
+            }
         </>
         }
       </View>

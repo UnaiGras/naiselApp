@@ -65,6 +65,11 @@ export const ProfileScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={handleInviteFriendsPress}>
           <Text style={styles.buttonText}>Invitar amigos</Text>
         </TouchableOpacity>
+        {profInfo.planMaker === false &&
+        <TouchableOpacity style={styles.button} onPress={handleInviteFriendsPress}>
+          <Text style={styles.buttonText}>Convertirse en Creador</Text>
+        </TouchableOpacity>
+        }
     </>
         }
       </View>
@@ -101,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#191919',
     padding: 16,
     borderRadius: 8,
-    marginBottom: 16,
+    marginVertical: 12,
     width: "90%",
     alignItems: 'center',
   },

@@ -7,13 +7,16 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 export const SearchScreen = ({navigation}) => {
 
     const [searchQuery, setSearchQuery] = useState("");
+    const [list, setList] = useState({})
 
     const {data} = useQuery(TRENDING_PLANS, {
       onError: err => {
         console.log(err)
       },
       onCompleted: onf => {
-        console.log(onf)
+        const reversed = onf.requestTrendingPlans.slice().reverse()
+
+        setList(reversed)
       }
     })
 
@@ -53,9 +56,9 @@ export const SearchScreen = ({navigation}) => {
           value={searchQuery}
           onChangeText={text => setSearchQuery(text)}
         />
-    { data &&
+    { list &&
         <FlatList
-          data={data.requestTrendingPlans}
+          data={list}
           renderItem={renderGridItem}
           keyExtractor={(item) => item._id}
         />

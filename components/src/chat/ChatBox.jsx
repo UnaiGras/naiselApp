@@ -33,10 +33,11 @@ export const ChatScreen = ({navigation, route}) => {
   const addAudioMessage = (audioURI) => {
     const newMessage = {
       text: "",
-      sender: true,
+      sender: false,
       mediaFile: audioURI,
     };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
+    console.log(messages, "Este es el estado despues de el segundo set")
   };
   
 
@@ -59,7 +60,7 @@ export const ChatScreen = ({navigation, route}) => {
         authorInfo.userInfoByPlanId.stability,
         authorInfo.userInfoByPlanId.clarity
       );
-  
+      console.log(messages, "Este es el estado despues de devolver fetchVoices")
       // Extraer el archivo de audio de la respuesta
       const blob = await voiceResponse.blob();
   
@@ -88,14 +89,10 @@ export const ChatScreen = ({navigation, route}) => {
         mediaFile: "",
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setMessage("")
+      console.log(messages, "Este es el estado despues de el primer set")
       if (!isQuerying) {
         
         setIsQuerying(true);
-        console.log({
-          planId: planId,
-          prompt: message
-        })
         request({
           variables: {
             planId: planId,
@@ -107,30 +104,24 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const handleQueryResponse = (data) => {
-    if (isQuerying && data) {
-      console.log(data, "<<<----DataResponse")
-      const response = data?.generateMessageResponse.value;
-      if (response) {
-        getVoices(response)
-      }
-      setIsQuerying(false); // Establecer isQuerying en false después de agregar el mensaje de audio
+  if (isQuerying && data) {
+    console.log(data, "<<<----DataResponse")
+    const response = data?.generateMessageResponse.value;
+    if (response) {
+      getVoices(response)
     }
-  };
-  
+    setIsQuerying(false); // Establecer isQuerying en false después de agregar el mensaje de audio
+  }
+};
+
   
 
   useEffect(() => {
     if (data) {
-      console.log(data)
+      console.log(messages, "Este es el estado despues data in useeffect")
       handleQueryResponse(data);
     }
   }, [data]);
-  
-  useEffect(() => {
-    if(authorInfo) {
-      console.log(authorInfo)
-    }
-  }, [authorInfo])
 
 
 
@@ -140,11 +131,10 @@ export const ChatScreen = ({navigation, route}) => {
     <View style={styles.container}>
       { authorInfo &&
         <TouchableOpacity
-        onPress={() => getVoices("Hola buenas")}
-        //onPress={() => {
-        //    navigation.navigate("NotProfileScreen", {userId: authorInfo.userInfoByPlanId.id})
-        //  }
-        //}
+        onPress={() => {
+            navigation.navigate("NotProfileScreen", {userId: authorInfo.userInfoByPlanId.id})
+          }
+        }
           style={styles.profileBox}
         >
           <View style={{
@@ -168,23 +158,12 @@ export const ChatScreen = ({navigation, route}) => {
       }
       {messages.map((msg, index) => (
         <View key={index}>
-        { msg.sender === true &&
+        { msg.sender === true && msg.text !== false &&
           <View style={{
               backgroundColor: "#a565f2",
               padding: 10,
               borderRadius: 13,
               alignSelf: "flex-end",
-              marginVertical: 20
-          }}>
-            <Text style={{fontSize: 16, fontWeight: "400"}}>{msg.text}</Text>
-          </View>
-          }
-          { msg.sender === false &&
-          <View style={{
-              backgroundColor: "#191919",
-              padding: 10,
-              borderRadius: 13,
-              alignSelf: "flex-start",
               marginVertical: 20
           }}>
             <Text style={{fontSize: 16, fontWeight: "400"}}>{msg.text}</Text>
@@ -204,15 +183,20 @@ export const ChatScreen = ({navigation, route}) => {
           </View>
 
           }
-          {msg.sender === true  && (
+          {msg.sender === false  && (
             <View
               style={{
-                backgroundColor: "#a565f2",
+                backgroundColor: "#212121",
                 padding: 10,
                 borderRadius: 13,
                 alignSelf: "flex-start",
                 marginVertical: 20,
-                flexDirection: "row"
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "70%",
+                shadowColor: "#a565f2",
+                elevation: 15
               }}
             >
           { authorInfo &&
@@ -222,22 +206,18 @@ export const ChatScreen = ({navigation, route}) => {
             }}
             style={{
               borderRadius: 50,
-              height: 40,
-              width: 40
+              height: 60,
+              width: 60
             }}/>
             }
               {msg.mediaFile && (
                 <TouchableOpacity
                   onPress={() => playAudio(msg.mediaFile)}
                   style={{
-                    backgroundColor: "#fff",
-                    borderRadius: 8,
-                    marginTop: 8,
-                    alignSelf: "flex-end",
-                    padding: 8,
+                    marginRight: 10
                   }}
                 >
-                <Ionicons name="play" color="#a565f2"/>
+                <Ionicons name="play" color="white" size={30}/>
                 </TouchableOpacity>
               )}
             </View>

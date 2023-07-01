@@ -58,8 +58,8 @@ export const NotProfileScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    paddingHorizontal: 16,
+    backgroundColor: '#101010',
+    paddingHorizontal: 16
   },
   userInfo: {
     alignItems: 'center',
@@ -97,8 +97,8 @@ const styles = StyleSheet.create({
   },
   planCard: {
     backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 16,
+    borderRadius: 12,
+    padding: 6,
     marginBottom: 16,
   },
   planPhoto: {
