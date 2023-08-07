@@ -100,7 +100,7 @@ export const CreatePlanForm = () => {
         type: type, 
         photo: image,
         planTokensLenght: tokensLenght,
-        voluntaryTax: 10
+        voluntaryTax: 20
       }
     })
 
@@ -195,7 +195,7 @@ export const CreatePlanForm = () => {
                 source={require("../../../assets/hombre-de-negocios.png")}
                 style={genere === "un hombre" ? styles.photoGenreChoosed : styles.photoGenre}
                 />
-                <Text style={{alignSelf: "center"}}>Hombre</Text>
+                <Text style={{alignSelf: "center", color: 'white',}}>Hombre</Text>
           </TouchableOpacity>
           <TouchableOpacity
               onPress={() => setGenere("una mujer")}
@@ -204,11 +204,11 @@ export const CreatePlanForm = () => {
                 source={require("../../../assets/mujer-de-negocios.png")}
                 style={genere === "una mujer" ? styles.photoGenreChoosed : styles.photoGenre}
                 />
-                <Text style={{alignSelf: "center"}}>Mujer</Text>
+                <Text style={{alignSelf: "center", color: 'white',}}>Mujer</Text>
           </TouchableOpacity>
 
       </View>
-          <Text style={{fontSize: 18, fontWeight: "700", marginTop: 20, marginLeft: 20}}>Actitud</Text>
+          <Text style={{fontSize: 18, fontWeight: "700", marginTop: 20, marginLeft: 20, color: 'white',}}>Actitud</Text>
         <View style={{
           flexDirection: "row", 
           backgroundColor: "#191919", 
@@ -221,11 +221,12 @@ export const CreatePlanForm = () => {
           <Text style={{
             fontSize: 16,
             fontWeight: "700",
-            marginLeft: 20
+            marginLeft: 20,
+            color: 'white',
           }}>Picante</Text>
           <Switch value={pesonality} onChange={() => setPersonality(!pesonality)}/>
           </View>
-          <Text style={{alignSelf: "center"}}>¡ATENCION! Si marcas la opcion de picante tu IA respondera con intencion de copular con la otra parte</Text>
+          <Text style={{alignSelf: "center", color: 'white'}}>¡ATENCION! Si marcas la opcion de picante tu IA respondera con intencion de copular con la otra parte</Text>
     <View style={{marginVertical: 20}}>
       <Text style={styles.title}>Precio</Text>
         
@@ -293,6 +294,9 @@ const styles = StyleSheet.create({
     inputContainer: {
       marginBottom: 16,
     },
+    value: {
+      color: 'white',
+    },
     inputContainerRow: {
       marginBottom: 16,
       flexDirection: "row",
@@ -304,7 +308,8 @@ const styles = StyleSheet.create({
       borderRadius: 8,
       paddingVertical: 8,
       paddingHorizontal: 16,
-      backgroundColor: "#151515"
+      backgroundColor: "#151515",
+      color: "white"
     },
     button: {
         alignItems: "center",
@@ -342,12 +347,14 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 28,
       fontWeight: "bold",
-      marginVertical: 10
+      marginVertical: 10,
+      color: 'white',
     },
     text: {
       fontSize: 20, 
       fontWeight: "700", 
-      marginLeft: 15
+      marginLeft: 15,
+      color: 'white',
     },
     chooseContainer: {
       flexDirection: "row",

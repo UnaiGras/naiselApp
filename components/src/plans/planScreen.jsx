@@ -7,7 +7,7 @@ import AnimatedLottieView from "lottie-react-native";
 const PlanScreen = ({ navigation, route}) => {
 
     const [plan, setPlan] = useState(null)
-  const [loadingAnimation, setLoadingAnimation] = useState(false)
+    const [loadingAnimation, setLoadingAnimation] = useState(false)
 
 
     const planId = route.params.data
@@ -97,7 +97,7 @@ const PlanScreen = ({ navigation, route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#101010',
     padding: 16,
   },
   photo: {
@@ -124,19 +124,23 @@ const styles = StyleSheet.create({
   authorName: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: "white"
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: "white"
   },
   price: {
     fontSize: 26,
     marginBottom: 8,
+    color: "white"
   },
   description: {
     fontSize: 14,
     marginBottom: 16,
+    color: "white"
   },
   getPlanButton: {
     backgroundColor: '#a565f2',

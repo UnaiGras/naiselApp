@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, TextInput, TouchableOpacity, StyleSheet, Text, Image } from "react-native";
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, Image, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MESSAGE_RESPONSE, AUTHOR_INFO_BY_PLANID } from "./chatQuerys";
 import { useLazyQuery, useQuery } from "@apollo/client";
@@ -30,9 +30,9 @@ export const ChatScreen = ({navigation, route}) => {
     }
   })
 
-  const addAudioMessage = (audioURI) => {
+  const addAudioMessage = (audioURI, message) => {
     const newMessage = {
-      text: "",
+      text: message,
       sender: false,
       mediaFile: audioURI,
     };
@@ -54,6 +54,12 @@ export const ChatScreen = ({navigation, route}) => {
 
   const getVoices = async (message) => {
     try {
+
+      console.log(
+        authorInfo.userInfoByPlanId.clarity,
+        authorInfo.userInfoByPlanId.stability
+      )
+
       const voiceResponse = await FetchVoice(
         authorInfo.userInfoByPlanId.voiceId,
         message,
@@ -68,7 +74,7 @@ export const ChatScreen = ({navigation, route}) => {
         const reader = new FileReader();
         reader.onloadend = async () => {
           const audioDataURL = reader.result;
-          addAudioMessage(audioDataURL);
+          addAudioMessage(audioDataURL, message);
         };
         reader.readAsDataURL(blob);
         setIsQuerying(false);
@@ -89,7 +95,7 @@ export const ChatScreen = ({navigation, route}) => {
         mediaFile: "",
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-      console.log(messages, "Este es el estado despues de el primer set")
+      setMessage("")
       if (!isQuerying) {
         
         setIsQuerying(true);
@@ -151,11 +157,12 @@ export const ChatScreen = ({navigation, route}) => {
               width: 40
             }}
             />
-            <Text style={{marginLeft: 10, fontSize: 20, fontWeight: "bold"}}>{authorInfo.userInfoByPlanId.username}</Text>
+            <Text style={{marginLeft: 10, fontSize: 20, fontWeight: "bold", color: 'white',}}>{authorInfo.userInfoByPlanId.username}</Text>
           </View>
 
         </TouchableOpacity>
       }
+      <ScrollView>
       {messages.map((msg, index) => (
         <View key={index}>
         { msg.sender === true && msg.text !== false &&
@@ -168,20 +175,6 @@ export const ChatScreen = ({navigation, route}) => {
           }}>
             <Text style={{fontSize: 16, fontWeight: "400"}}>{msg.text}</Text>
           </View>
-          }
-          { loading &&
-          <View
-            style={{
-              backgroundColor: "#191919",
-              padding: 10,
-              borderRadius: 13,
-              alignSelf: "flex-start",
-              marginVertical: 20
-            }}
-          >
-              <Text style={{fontSize: 16, fontWeight: "600"}}>Grabando audio...</Text>
-          </View>
-
           }
           {msg.sender === false  && (
             <View
@@ -224,7 +217,21 @@ export const ChatScreen = ({navigation, route}) => {
     )}
         </View>
       ))}
+      { loading &&
+          <View
+            style={{
+              backgroundColor: "#191919",
+              padding: 10,
+              borderRadius: 13,
+              alignSelf: "flex-start",
+              marginVertical: 20
+            }}
+          >
+              <Text style={{fontSize: 16, fontWeight: "600"}}>Grabando audio...</Text>
+          </View>
 
+          }
+    </ScrollView>
     </View>
     <View style={styles.inputContainer}>
     <TextInput

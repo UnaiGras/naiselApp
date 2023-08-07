@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     text: {
-        fontSize: 10
+        fontSize: 10,
+        color: "white"
     }
 })
 
@@ -36,7 +37,7 @@ const AppBar = ({data, navigation, position}) => {
                 {position === "search" ? (
                 <Ionicons name="search" size={25} />
                 ):(
-                <Ionicons name="search-outline" size={25} />
+                <Ionicons name="search-outline" size={25} color="white" />
                 )}
                 <Text style={styles.text}>Buscar</Text>
 

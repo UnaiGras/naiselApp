@@ -31,12 +31,12 @@ export const Plans = ({navigation}) => {
       <TouchableOpacity 
         style={styles.button}
         onPress={handleGoCreate} >
-          <Text>Crear Plan</Text>
+          <Text style={{color: "white"}}>Crear Plan</Text>
       </TouchableOpacity>
     { data &&
     <>
         <View style={{backgroundColor: "#191919", paddingVertical: 6, borderWidth: 1, borderColor: "gray", width: "104%", alignSelf: "center"}}>
-          <Text style={{fontSize: 22, fontWeight: "bold", marginLeft: 20}}>Planes De {data.requestMyPlans.username}</Text>
+          <Text style={{fontSize: 22, fontWeight: "bold", marginLeft: 20, color: "white"}}>Planes De {data.requestMyPlans.username}</Text>
         </View>  
         <View style={styles.capsuledList}>
           <FlatList
@@ -65,7 +65,8 @@ const styles = StyleSheet.create({
   planName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 10
+    marginVertical: 10,
+    color: "white"
   },
   description: {
     fontSize: 16,
@@ -78,11 +79,11 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 22,
-    color: '#000000',
+    color: "white"
   },
   duration: {
     fontSize: 16,
-    color: '#000000',
+    color: 'white',
   },
   type: {
     fontSize: 16,

@@ -56,3 +56,12 @@ query Query {
   }
 }
 `
+
+export const CREATE_CHANNEL_MUTATION = gql`
+mutation CreateChannel($name: String, $description: String, $photo: String) {
+  createChannel(name: $name, description: $description, photo: $photo) {
+    id
+    name
+    description
+  }
+}`

@@ -74,14 +74,17 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: 'white',
   },
   name: {
     fontSize: 16,
     marginBottom: 12,
+    color: 'white',
   },
   email: {
     fontSize: 14,
     marginBottom: 24,
+    color: 'white',
   },
   plansContainer: {
     flex: 1,
@@ -91,12 +94,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
+    color: 'white',
   },
   flatlistContentContainer: {
     paddingBottom: 16,
   },
   planCard: {
-    backgroundColor: 'white',
+    backgroundColor: '#151515',
     borderRadius: 12,
     padding: 6,
     marginBottom: 16,
@@ -111,13 +115,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: 'white',
   },
   planPrice: {
     fontSize: 16,
     marginBottom: 8,
+    color: 'white',
   },
   planDescription: {
     fontSize: 14,
+    color: 'white',
   },
 });
 

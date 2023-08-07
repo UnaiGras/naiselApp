@@ -39,6 +39,19 @@ export const SearchScreen = ({navigation}) => {
             <Text style={styles.name}>{item.planName}</Text>
             <Text style={styles.price}>{item.price}</Text>
             <Text style={styles.description}>{item.description}</Text>
+          
+                {item.planTokensLenghtResponse === 250 &&
+                  <ShortResponseTag/>
+                }
+              
+                {item.planTokensLenghtResponse === 500 &&
+                  <MediumResponseTag/>
+                }
+
+                {item.planTokensLenghtResponse === 750 &&
+                  <LargeResponseTag/>
+                }
+                
             <View style={styles.authorContainer}>
               <Image source={{ uri: item.author.profilePhoto }} style={styles.authorPhoto} />
               <Text style={styles.authorName}>{item.author.name}</Text>
@@ -67,10 +80,63 @@ export const SearchScreen = ({navigation}) => {
     );
 };
 
+const ShortResponseTag = () => {
+  return(
+    <View style={styles.shortResponse}>
+      <Text>Respuestas Cortas</Text>
+    </View>
+  )
+}
+
+const MediumResponseTag = () => {
+  return(
+    <View style={styles.mediumResponse}>
+      <Text>Respuestas Medianas</Text>
+    </View>
+  )
+}
+
+const LargeResponseTag = () => {
+  return(
+    <View style={styles.largeResponse}>
+      <Text>Respuestas Grandes</Text>
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
+  shortResponse: {
+    backgroundColor: "blue",
+    padding: 5,
+    borderWidth: 0.5,
+    borderColor: "blue",
+    opacity: 0.6,
+    alignSelf: "flex-start",
+    borderRadius: 10
+  },
+  mediumResponse: {
+    backgroundColor: "red",
+    padding: 5,
+    borderWidth: 0.5,
+    borderColor: "red",
+    opacity: 0.6,
+    alignSelf: "flex-start",
+    borderRadius: 10,
+    color: 'white',
+  },
+  largeResponse: {
+    backgroundColor: "#a565f2",
+    padding: 5,
+    borderWidth: 0.5,
+    borderColor: "#a565f2",
+    opacity: 0.6,
+    alignSelf: "flex-start",
+    borderRadius: 10,
+    color: 'white',
+  },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#101010",
   },
   searchBar: {
     height: 40,
@@ -79,6 +145,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,
+    color: 'white',
   },
   gridItem: {
     flex: 1,
@@ -95,8 +162,8 @@ const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#151515',
     borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
+    padding: 5,
+    margin: 16,
   },
   photo: {
     width: '100%',
@@ -108,18 +175,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: 'white',
   },
   price: {
     fontSize: 16,
     marginBottom: 8,
+    color: 'white',
   },
   description: {
     fontSize: 14,
     marginBottom: 8,
+    color: 'white',
   },
   authorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 10,
+
   },
   authorPhoto: {
     width: 24,
@@ -130,6 +202,7 @@ const styles = StyleSheet.create({
   authorName: {
     fontSize: 14,
     fontWeight: 'bold',
+    color: 'white',
   },
   
 });

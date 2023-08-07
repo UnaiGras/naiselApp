@@ -27,6 +27,14 @@ export const ProfileScreen = ({ navigation }) => {
       // Lógica para mostrar los contactos
     };
 
+    const handleBecome = () => {
+      navigation.navigate("BecomeMakerForm")
+    }
+
+    const handleCreateChannelPress = () => {
+      navigation.navigate("CreateChannelScreen")
+    }
+
     const handleEditProfilePress = () => {
       navigation.navigate("EditProfile", {
         data: profInfo,
@@ -54,6 +62,9 @@ export const ProfileScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.PremiumButton} onPress={handleTrainVoice}>
             <Text style={styles.buttonText}>Entrenar Voz</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.PremiumButton} onPress={handleCreateChannelPress}>
+            <Text style={styles.buttonText}>Crear un Canal</Text>
+        </TouchableOpacity>
           </>
         }
         <TouchableOpacity style={styles.button} onPress={handleContactsPress}>
@@ -66,7 +77,10 @@ export const ProfileScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Invitar amigos</Text>
         </TouchableOpacity>
         {profInfo.planMaker === false &&
-        <TouchableOpacity style={styles.button} onPress={handleInviteFriendsPress}>
+        <TouchableOpacity 
+        style={styles.button} 
+        onPress={handleBecome}
+        >
           <Text style={styles.buttonText}>Convertirse en Creador</Text>
         </TouchableOpacity>
         }
@@ -93,14 +107,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: "white"
   },
   email: {
     fontSize: 16,
     marginBottom: 8,
+    color: "white"
   },
   username: {
     fontSize: 16,
     marginBottom: 24,
+    color: "white"
   },
   button: {
     backgroundColor: '#191919',

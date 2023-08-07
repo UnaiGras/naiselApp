@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from "react-native";
 import {useQuery} from "@apollo/client"
 import { CHAT_LIST } from "./homeQuerys";
@@ -6,12 +6,15 @@ import { Ionicons } from "@expo/vector-icons";
 
 export const ChatsList = ({navigation}) => {
 
+    const [chatList, setChatList] = useState()
+
     const {data} = useQuery(CHAT_LIST, {
         onError: err => {
             console.log(err, "ChatList")
         },
         onCompleted: info => {
-            console.log(info)
+            const reverse = info.requestChats.chats.slice().reverse()
+            setChatList(reverse)
         }
     })
 
@@ -19,7 +22,7 @@ export const ChatsList = ({navigation}) => {
         <View style={{flex:1}}>
             { data &&
                 <FlatList
-                    data={data.requestChats.chats}
+                    data={chatList}
                     renderItem={({ item }) => (
                         <TouchableOpacity>
                             <ChatCard item={item} navigation={navigation}/>
@@ -46,8 +49,9 @@ const ChatCard = ({item, navigation}) => {
         <TouchableOpacity
         style={{paddingVertical: 10, marginVertical: 10}}
         onPress={()=> {
-            navigation.navigate("ChatScreen", {
-                planId: item.plan.id
+            navigation.navigate("ChannelScreen", {
+                planId: item.plan.id,
+                creatorId: item.plan.author.id
             })
         }}
         >
@@ -63,7 +67,7 @@ const ChatCard = ({item, navigation}) => {
                             source={{uri: item.plan.author.profilePhoto}}
                             />
                         
-                            <Text style={{fontSize: 20, fontWeight: "600", marginLeft: 20}}>{item.plan.planName}</Text>
+                            <Text style={{fontSize: 20, fontWeight: "600", marginLeft: 20, color: "white"}}>{item.plan.planName}</Text>
                         <Text style={{fontSize: 16, fontWeight: "600", marginLeft: 20, color: "gray"}}>{item.plan.author.username}</Text>
                     </View>
                     <View style={{marginBottom: 15, marginTop: 5, marginHorizontal: 20,alignSelf: "flex-start"}}>

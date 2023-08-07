@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import React, {useEffect, useState } from "react";
-import { View, Text, TextInput, StyleSheet,Button } from "react-native";
+import { View, Text, TextInput, StyleSheet,Button, Image } from "react-native";
 import { LOGIN } from "./loginQueries";
 import { TouchableOpacity } from "react-native-gesture-handler";
 //hacer las querys para representar las paginas de usuario
@@ -40,6 +40,17 @@ export default function Login1({navigation, setToken}) {
     return(
         <View style={styles.container}>
             <View style={styles.formContainer}>
+              <Image 
+              source={require("../../../assets/logo.png")}
+              style={{
+                width: 170,
+                height: 170,
+                marginBottom: 2,
+                alignSelf: "center",
+                borderRadius: 20
+              }}
+              />
+              <Text style={styles.naisel}>NaiselApp</Text>
                 <TextInput
                   style={styles.input}
                   value={username}
@@ -73,12 +84,18 @@ export default function Login1({navigation, setToken}) {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#101010',
+      backgroundColor: '#151515',
       justifyContent: 'center',
       alignItems: 'center',
     },
     formContainer: {
       width: '80%',
+      padding: 20,
+      paddingVertical: 30,
+      borderRadius: 20,
+      backgroundColor: "#101010",
+      shadowColor: "#a565f2",
+      elevation: 10
     },
     input: {
       backgroundColor: '#191919',
@@ -86,6 +103,14 @@ const styles = StyleSheet.create({
       paddingHorizontal: 10,
       height: 50,
       borderRadius: 8,
-      fontSize: 20
+      fontSize: 20,
+      color: "white"
     },
+    naisel: {
+      fontSize: 18,
+      fontWeight: "700",
+      alignSelf: "center",
+      marginBottom: 20,
+      color: "white"
+    }
   });

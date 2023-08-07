@@ -7,6 +7,7 @@ query RequestTrendingPlans {
       id
       photo
       price
+      planTokensLenghtResponse
       description
       author {
         name

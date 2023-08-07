@@ -7,6 +7,12 @@ export const FetchVoice = async (voiceID, message, stability, similarityBoost) =
     'Content-Type': 'application/json',
   };
 
+  console.log(
+    stability / 100,
+    similarityBoost / 100,
+    "datos en teoria flotantes"
+  )
+
   const body = {
     text: message,
     model_id: 'eleven_multilingual_v1',
