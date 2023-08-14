@@ -43,3 +43,22 @@ mutation CreatePlan($planName: String, $description: String, $context: String, $
   }
 }
 `
+
+export const GET_PAYMENT_SHEET = gql`
+mutation CreatePaymentSheet($amount: Float) {
+  createPaymentSheet(amount: $amount) {
+    clientSecret
+    customerId
+  }
+}
+`
+
+export const DEPOSIT = gql `
+mutation Deposit($amount: Float) {
+  deposit(amount: $amount) {
+    id
+    money
+    username
+  }
+}
+`

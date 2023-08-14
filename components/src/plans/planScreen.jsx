@@ -1,13 +1,20 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TextInput, StyleSheet, Alert, TouchableOpacity } from "react-native";
+import { CardField, usePaymentSheet, useConfirmPayment } from "@stripe/stripe-react-native";
 import { REQUEST_PLAN, SUBSCRIBE_TO_PLAN } from './planQuerys';
 import AnimatedLottieView from "lottie-react-native";
+import { DEPOSIT, GET_PAYMENT_SHEET } from "./planQuerys";
+
 
 const PlanScreen = ({ navigation, route}) => {
 
     const [plan, setPlan] = useState(null)
     const [loadingAnimation, setLoadingAnimation] = useState(false)
+    const [setedAmount, setSetedAmount] = useState(false)
+    const [amount, setAmount] = useState(0)
+    const [ready, setReady] = useState(false)
+    const {initPaymentSheet, presentPaymentSheet, loading} = usePaymentSheet()
 
 
     const planId = route.params.data
@@ -27,11 +34,32 @@ const PlanScreen = ({ navigation, route}) => {
       }
     })
 
+    const [createPaymentSheet, {data, error}] = useMutation(GET_PAYMENT_SHEET, {
+      onError: err => {
+          console.log(err)
+      }
+  })
+
+  const [deposit, {data: depositResponse}] = useMutation(DEPOSIT, {
+      onError: err => {
+          console.log(err)
+      }
+  })
+
+
     const handleAuthorProfilePress = () => {
         if (plan){
             navigation.navigate("NotProfileScreen", {userId: plan.author.id})
         }
     };
+
+    const initializePaymentSheet = async() => {
+       
+      
+      await createPaymentSheet({
+          variables: {amount: howMuch}
+      })
+    }
 
     const handleGetPlanPress = () => {
       subscribeToPlan({
@@ -40,6 +68,46 @@ const PlanScreen = ({ navigation, route}) => {
         }
       })
     };
+
+    const presentSheet = async() => {
+      if (data){
+          const {customerId, clientSecret} = data.createPaymentSheet
+          console.log(customerId, clientSecret)
+          const initResponse = await initPaymentSheet({
+              merchantDisplayName: "Deposit_Wallet",
+              paymentIntentClientSecret: clientSecret,
+              customerId: customerId,
+              appearance: {
+                  colors: {
+                      primary: "#151515",
+                      background: "#191919"
+                  },
+                  shapes: {
+                      borderRadius: 10
+                  }
+              }
+          })
+
+          if (initResponse.error) {
+              Alert.alert(`Error code: ${initResponse.error.code}--`, initResponse.error.message)
+          }
+
+          await presentPaymentSheet()
+    }
+    }
+  
+    useEffect(() => {
+        if (data) {
+            presentSheet()  
+        }
+    }, [data])
+
+
+    const handle = ( ) => {
+        console.log('klklklk')
+        setSetedAmount(true)
+    }
+
     useEffect(() => {
       if (response){
         setLoadingAnimation(true)
@@ -65,6 +133,20 @@ const PlanScreen = ({ navigation, route}) => {
                 <TouchableOpacity style={styles.getPlanButton} onPress={handleGetPlanPress}>
                   <Text style={styles.getPlanButtonText}>Obtener plan</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                onPress={initializePaymentSheet}
+                style={{
+                    backgroundColor: '#00c1b9',
+                    paddingVertical: 10,
+                    paddingHorizontal: 50,
+                    alignSelf: 'center',
+                    borderRadius: 15
+                }}   
+            >
+                <Text style={{ fontSize: 22, fontStyle: 'italic', fontWeight: 'bold'}}>
+                    Depositar
+                </Text>
+                </TouchableOpacity>
             </View>
             { loadingAnimation === true &&
                 <View style={{
@@ -88,6 +170,7 @@ const PlanScreen = ({ navigation, route}) => {
                   <Text style={{fontWeight: "800", fontStyle: "italic"}}>Compra realizada con exito.</Text>
               </View>
             }
+            
         </>
         }
       </View>
@@ -153,6 +236,20 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  cardInput: {
+    borderRadius: 20,
+    height: 50,
+    backgroundColor: '#191919',
+    width: "80%",
+    marginHorizontal: 10,
+    fontSize: 45,
+    paddingHorizontal: 20
+  },
+  text: {
+      fontSize: 18,
+      fontStyle: 'italic',
+      fontWeight: '700'
   }
 });
 

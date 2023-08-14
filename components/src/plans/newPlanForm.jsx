@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text, Image, Switch, PanResponder } from "react-native";
+import { 
+  View, 
+  TextInput, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Text, 
+  Image, 
+  Switch, 
+  PanResponder,
+  ScrollView
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker'
-import { ScrollView } from "react-native";
 import { CREATE_PLAN } from "./planQuerys";
 import { useMutation } from "@apollo/client";
 import SliderComponent from "./percentajeBar";
@@ -109,8 +118,7 @@ export const CreatePlanForm = () => {
 
   return (
     <View style={styles.container}>
-              <ScrollView>
-          <>
+         <ScrollView>
       <View style={{width: '100%', alignItems: 'center'}}>
 
              <TouchableOpacity
@@ -145,7 +153,8 @@ export const CreatePlanForm = () => {
           style={styles.input}
           placeholder="Nombre del plan"
           value={planName}
-          onChangeText={(text) => setPlanName()}
+          onChangeText={(text) => setPlanName(text)}
+
         />
       </View>
 
@@ -158,17 +167,17 @@ export const CreatePlanForm = () => {
           multiline
         />
       </View>
-<<<<<<< HEAD
+
 
       <View style={styles.inputContainerRow}>
-=======
-                   <SliderComponent/>      
+          <SliderComponent/>     
+      </View> 
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           placeholder="Contexto"
           value={context}
-          onChangeText={setContext}
+          onChangeText={(text) => setContext(text)}
         />
       </View>
 
@@ -183,7 +192,7 @@ export const CreatePlanForm = () => {
       </View>
 
       <View style={styles.inputContainer}>
->>>>>>> badcd68a03b189f904cfd88d0ca644ad953143d5
+
         <TextInput
           style={styles.input}
           placeholder="Duración"
@@ -304,7 +313,7 @@ export const CreatePlanForm = () => {
       onPress={handleSubmit} >
         <Text>Crear Plan</Text>
       </TouchableOpacity>
-      </>
+
       </ScrollView>
     </View>
   );

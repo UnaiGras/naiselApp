@@ -14,12 +14,14 @@ query ChanelInfo($creatorId: String) {
 `
 
 export const GET_COMMON_PLANS = gql`
-query GetCommonPlans($creatorId: String) {
-    requestContent(creatorId: $creatorId) {
-      id
-      name
-      content
-    }
+query Query($creatorId: String) {
+  requestContent(creatorId: $creatorId) {
+    planContent
+    id
+    photo
+    description
+    planName
   }
+}
 `
 

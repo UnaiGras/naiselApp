@@ -20,6 +20,7 @@ import { BecomeMakerForm } from "./components/src/profile/becomeMaker";
 import { CreateChannelScreen } from "./components/src/profile/createChannelScreen";
 import { ChannelScreen } from "./components/src/chanel/chanelScreen";
 import { ChannelDetailScreen } from "./components/src/chanel/channelDetails";
+import PlanContentForm from "./components/src/plans/addConentToPlan";
 
 const Stack = createStackNavigator()
 
@@ -251,6 +252,19 @@ export default function Navigation() {
                 <Stack.Screen
                     name="ChannelDetailScreen"
                     component={ChannelDetailScreen}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#151515',
+                            shadowColor: "#191919",
+                        },
+                        headerTitleStyle: {
+                            color: "white"
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name="PlanContentForm"
+                    component={PlanContentForm}
                     options={{
                         headerStyle: {
                             backgroundColor: '#151515',

@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
     floatingButton: {
         bottom: 16,
         backgroundColor: '#a565f2',
-        padding: 16,
-        borderRadius: 50,
+        borderRadius: 30,
+        paddingVertical: 4,
         alignItems: "center",
         elevation: 8,
         shadowColor: "#a565f2",
