@@ -24,14 +24,24 @@ export const ChannelDetailScreen = ({route, navigation}) => {
 
     const renderPlan = ({ item: plan }) => (
         <View style={styles.planCard}>
-            <Image source={{ uri: plan.photo }} style={styles.planImage} />
-            <View style={styles.planContent}>
-                <Text style={styles.planTitle}>{plan.planName}</Text>
-                <Text style={styles.planDescription}>{plan.description}</Text>
-                {plan.planContent.map((detail, index) => (
-                    <Text key={index} style={styles.planDetailItem}>{detail}</Text>
-                ))}
-            </View>
+            <TouchableOpacity
+            onPress={() => {
+                navigation.navigate(
+                    "PlanContentDisplay", 
+                    {
+                        planId: plan.id
+                    })
+            }}
+            >
+                <Image source={{ uri: plan.photo }} style={styles.planImage} />
+                <View style={styles.planContent}>
+                    <Text style={styles.planTitle}>{plan.planName}</Text>
+                    <Text style={styles.planDescription}>{plan.description}</Text>
+                    {plan.planContent.map((detail, index) => (
+                        <Text key={index} style={styles.planDetailItem}>{detail}</Text>
+                    ))}
+                </View>
+            </TouchableOpacity>
         </View>
     );
 
@@ -66,7 +76,7 @@ export const ChannelDetailScreen = ({route, navigation}) => {
                 <Text style={styles.descriptionText}>{channel.description}</Text>
             </View>
             <View style={styles.descriptionContainer}>
-                <Text>Planes en posesión</Text>
+                <Text style={styles.descriptionText}>Planes en posesión</Text>
             </View>
             {data && (
                 <FlatList
@@ -114,7 +124,7 @@ const styles = StyleSheet.create({
         width: 100,
         height: 80,
         borderRadius: 10, 
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#191919',
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -128,25 +138,25 @@ const styles = StyleSheet.create({
         width: '90%',
         marginTop: 20,
         padding: 10,
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#191919',
         borderRadius: 10,
         alignItems: 'center'
     },
     descriptionTitle: {
         fontSize: 12,
-        color: '#000',
+        color: 'white',
         marginBottom: 5
     },
     descriptionText: {
         fontSize: 14,
-        color: '#000',
+        color: 'white',
         textAlign: 'center',
         fontWeight: "700"
     },
     planCard: {
         width: '100%', // Ocupa toda la anchura de la pantalla
         marginTop: 20,
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#191919',
         borderRadius: 10,
         overflow: 'hidden'
     },
@@ -159,12 +169,12 @@ const styles = StyleSheet.create({
     },
     planTitle: {
         fontSize: 22, // Incremento del tamaño del texto
-        color: '#000'
+        color: 'white'
     },
     planDescription: {
         marginTop: 10, // Incremento del margen
         fontSize: 18, // Incremento del tamaño del texto
-        color: '#000'
+        color: 'white'
     },
     planDetails: {
         borderTopWidth: 1,
@@ -173,7 +183,7 @@ const styles = StyleSheet.create({
     },
     planDetailItem: {
         fontSize: 16, // Incremento del tamaño del texto
-        color: '#000'
+        color: 'white'
     }
 });
 

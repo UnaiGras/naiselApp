@@ -20,3 +20,25 @@ query UserInfoByPlanId($planId: String) {
     }
   }
 `
+
+export const GET_PLAN_CONTENT = gql`
+query GetPlanContentById($planId: String) {
+  getPlanContentById(planId: $planId) {
+    planImage {
+      content
+      descrition
+      id
+      tag
+      title
+    }
+    planVideos {
+      title
+      id
+      descrition
+      tag
+    }
+    photo
+    planName
+  }
+}
+`

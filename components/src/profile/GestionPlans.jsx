@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import { REQUEST_MY_PLANS } from './gestionQuerys';
 import { useQuery } from '@apollo/client';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
-
-const Card = ({ item }) => {
+const Card = ({ item, openSheet, setSelectedPlanId }) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => {
+      setSelectedPlanId(item.id);
+      openSheet();
+    }}>
       <View style={styles.cardContainer}>
         <Image source={{ uri: item.photo }} style={styles.photo} />
         <Text style={styles.planName}>{item.planName}</Text>
@@ -18,39 +21,74 @@ const Card = ({ item }) => {
   );
 };
 
-export const Plans = ({navigation}) => {
-
-  const {data} = useQuery(REQUEST_MY_PLANS)
+export const Plans = ({ navigation }) => {
+  const { data } = useQuery(REQUEST_MY_PLANS);
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
+  const bottomSheetModalRef = useRef(null);
 
   const handleGoCreate = () => {
-    navigation.navigate("CreatePlanForm")
-  }
+    navigation.navigate("CreatePlanForm");
+  };
+
+  const handleUpload = () => {
+    if (selectedPlanId) {
+      navigation.navigate("PlanContentForm", { planId: selectedPlanId });
+      bottomSheetModalRef.current.close();
+    }
+  };
+
+  const openSheet = () => {
+    bottomSheetModalRef.current.present();
+  };
 
   return (
+    <BottomSheetModalProvider>
     <View style={styles.container}>
       <TouchableOpacity 
         style={styles.button}
-        onPress={handleGoCreate} >
+        onPress={handleGoCreate}>
           <Text style={{color: "white"}}>Crear Plan</Text>
       </TouchableOpacity>
-    { data &&
-    <>
-        <View style={{backgroundColor: "#191919", paddingVertical: 6, borderWidth: 1, borderColor: "gray", width: "104%", alignSelf: "center"}}>
-          <Text style={{fontSize: 22, fontWeight: "bold", marginLeft: 20, color: "white"}}>Planes De {data.requestMyPlans.username}</Text>
-        </View>  
-        <View style={styles.capsuledList}>
-          <FlatList
-            data={data.requestMyPlans.plans}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => <Card item={item} />}
-          />
-      </View>
-      </>
+      {data &&
+        <>
+          <View style={{backgroundColor: "#191919", paddingVertical: 6, borderWidth: 1, borderColor: "gray", width: "104%", alignSelf: "center"}}>
+            <Text style={{fontSize: 22, fontWeight: "bold", marginLeft: 20, color: "white"}}>Planes De {data.requestMyPlans.username}</Text>
+          </View>  
+          <View style={styles.capsuledList}>
+            <FlatList
+              data={data.requestMyPlans.plans}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => <Card item={item} openSheet={openSheet} setSelectedPlanId={setSelectedPlanId} />}
+            />
+          </View>
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={['30%']}
+            backgroundComponent={({ style }) => (
+              <View style={[style, { backgroundColor: '#171717' }]} />
+            )}
+          >
+            <View style={{ padding: 20 }}>
+              <TouchableOpacity style={styles.Mbutton} onPress={() => { /* Funcionalidad de editar */ }}>
+                <Text style={{color: "white"}}>Editar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.Mbutton} onPress={handleUpload}>
+                <Text style={{color: "white"}}>Subir</Text>
+              </TouchableOpacity>
+            </View>
+          </BottomSheetModal>
+        </>
       }
     </View>
+    </BottomSheetModalProvider>
   );
 };
 
+// Estilos no se han modificado
+
+
+// Estilos no se han modificado
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -115,6 +153,15 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     padding: 15,
     borderRadius: 10
+  },
+  Mbutton: {
+    alignItems: "center",
+    alignSelf: "center",
+    paddingVertical: 15,
+    marginVertical: 10,
+    width: "80%",
+    borderRadius: 10,
+    backgroundColor: "#a565f2",
   }
 });
 

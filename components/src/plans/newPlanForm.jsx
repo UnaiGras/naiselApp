@@ -128,7 +128,7 @@ export const CreatePlanForm = () => {
 
                          {!image &&
                             <View style= { { borderRadius: 110}}>
-                                <Ionicons name="image" size={200}/>
+                                <Ionicons name="image" size={200} color={"gray"}/>
                             </View>
                          }
                          { image &&
@@ -152,6 +152,7 @@ export const CreatePlanForm = () => {
         <TextInput
           style={styles.input}
           placeholder="Nombre del plan"
+          placeholderTextColor="gray"
           value={planName}
           onChangeText={(text) => setPlanName(text)}
 
@@ -162,44 +163,11 @@ export const CreatePlanForm = () => {
         <TextInput
           style={styles.input}
           placeholder="Descripción"
+          placeholderTextColor="gray"
           value={description}
           onChangeText={(text) => setDescription(text)}
           multiline
         />
-      </View>
-
-
-      <View style={styles.inputContainerRow}>
-          <SliderComponent/>     
-      </View> 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Contexto"
-          value={context}
-          onChangeText={(text) => setContext(text)}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Precio"
-          value={price}
-          onChangeText={setPrice}
-          keyboardType="numeric"
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Duración"
-          value={duration}
-          onChangeText={(text) => setDuration(text)}
-        />
-        <Text style={styles.text}>Meses</Text>
       </View>
       <Text style={styles.title}>Personalidad</Text>
       
@@ -207,6 +175,7 @@ export const CreatePlanForm = () => {
         <TextInput
           style={styles.input}
           placeholder="Nombre"
+          placeholderTextColor="gray"
           value={iaName}
           onChangeText={(text) => setIaName(text)}
         />
@@ -216,6 +185,7 @@ export const CreatePlanForm = () => {
         <TextInput
           style={styles.input}
           placeholder="Años"
+          placeholderTextColor="gray"
           value={years}
           onChangeText={(text) => setYears(text)}
         />
@@ -268,6 +238,7 @@ export const CreatePlanForm = () => {
         <TextInput
           style={styles.input}
           placeholder="Precio"
+          placeholderTextColor="gray"
           value={price}
           onChangeText={(text) => setPrice(text)}
           keyboardType="numeric"
@@ -320,92 +291,96 @@ export const CreatePlanForm = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: "#101010",
-      padding: 16,
-    },
-    inputContainer: {
-      marginBottom: 16,
-    },
-    value: {
-      color: 'white',
-    },
-    inputContainerRow: {
-      marginBottom: 16,
-      flexDirection: "row",
-      alignItems: "center"
-    },
-    input: {
-      borderWidth: 1,
-      borderColor: "#ccc",
-      borderRadius: 8,
-      paddingVertical: 8,
-      paddingHorizontal: 16,
-      backgroundColor: "#151515",
-      color: "white"
-    },
-    button: {
-        alignItems: "center",
-        alignSelf: "center",
-        paddingVertical: 10,
-        marginVertical: 10,
-        width: "80%",
-        borderRadius: 10,
-        backgroundColor: "#a565f2"
-    },
-    miniBox: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingHorizontal: 20,
-      marginVertical: 20
-    },
-    buttonBox: {
-      backgroundColor: '#212121',
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      borderRadius: 5,
-      marginVertical: 10
-    },
-    buttonBoxPressed: {
-      backgroundColor: '#a565f2',
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      borderRadius: 5,
-      marginVertical: 10
-    },
-    buttonText: {
-      color: 'white',
-      fontWeight: 'bold',
-    },
-    title: {
-      fontSize: 28,
-      fontWeight: "bold",
-      marginVertical: 10,
-      color: 'white',
-    },
-    text: {
-      fontSize: 20, 
-      fontWeight: "700", 
-      marginLeft: 15,
-      color: 'white',
-    },
-    chooseContainer: {
-      flexDirection: "row",
-      justifyContent: "center"
-    },
-    photoGenre: {
-      width: 120,
-      height: 120,
-      margin: 20
-    },
-    photoGenreChoosed: {
-      width: 120,
-      height: 120,
-      margin: 20,
-      backgroundColor: "#191919",
-      borderRadius: 20,
-      borderWidth: 1,
-      borderColor: "#a565f2"
-    }
-  });
+  container: {
+    flex: 1,
+    backgroundColor: "#101010",
+    padding: 16,
+  },
+  value: {
+    color: 'white',
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  inputContainerRow: {
+    marginBottom: 16,
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#151515",
+    color: "white"
+  },
+  button: {
+    alignItems: "center",
+    alignSelf: "center",
+    paddingVertical: 10,
+    marginVertical: 10,
+    width: "80%",
+    borderRadius: 10,
+    backgroundColor: "#a565f2"
+  },
+  miniBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginVertical: 20
+  },
+  buttonBox: {
+    backgroundColor: '#212121',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginVertical: 10
+  },
+  buttonBoxPressed: {
+    backgroundColor: '#a565f2',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginVertical: 10
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginVertical: 10,
+    color: 'white',
+  },
+  text: {
+    fontSize: 20, 
+    fontWeight: "700", 
+    marginLeft: 15,
+    color: 'white',
+  },
+  chooseContainer: {
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  photoGenre: {
+    width: 120,
+    height: 120,
+    margin: 20
+  },
+  photoGenreChoosed: {
+    width: 120,
+    height: 120,
+    margin: 20,
+    backgroundColor: "#191919",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#a565f2"
+  }
+});
+
+//<View style={styles.inputContainerRow}>
+//          <SliderComponent/>     
+//      </View> 

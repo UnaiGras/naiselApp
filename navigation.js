@@ -21,6 +21,7 @@ import { CreateChannelScreen } from "./components/src/profile/createChannelScree
 import { ChannelScreen } from "./components/src/chanel/chanelScreen";
 import { ChannelDetailScreen } from "./components/src/chanel/channelDetails";
 import PlanContentForm from "./components/src/plans/addConentToPlan";
+import PlanContentDisplay from "./components/src/chanel/planMedia";
 
 const Stack = createStackNavigator()
 
@@ -105,7 +106,7 @@ export default function Navigation() {
                     options={{
                         headerStyle: {
                             backgroundColor: '#151515',
-                            shadowColor: "#a565f2",
+                            shadowColor: "#191919",
                         },
                         headerTitleStyle: {
                             color: "white"
@@ -183,7 +184,7 @@ export default function Navigation() {
                     options={{
                         headerStyle: {
                             backgroundColor: '#151515',
-                            shadowColor: "#a565f2",
+                            shadowOffset: false
                         },
                         headerTitleStyle: {
                             color: "white"
@@ -209,7 +210,7 @@ export default function Navigation() {
                     options={{
                         headerStyle: {
                             backgroundColor: '#151515',
-                            shadowColor: "#a565f2",
+                            shadowColor: "#191919",
                         },
                         headerTitleStyle: {
                             color: "white"
@@ -265,6 +266,19 @@ export default function Navigation() {
                 <Stack.Screen
                     name="PlanContentForm"
                     component={PlanContentForm}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#151515',
+                            shadowColor: "#191919",
+                        },
+                        headerTitleStyle: {
+                            color: "white"
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name="PlanContentDisplay"
+                    component={PlanContentDisplay}
                     options={{
                         headerStyle: {
                             backgroundColor: '#151515',

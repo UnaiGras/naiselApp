@@ -53,12 +53,48 @@ mutation CreatePaymentSheet($amount: Float) {
 }
 `
 
-export const DEPOSIT = gql `
+export const DEPOSIT = gql`
 mutation Deposit($amount: Float) {
   deposit(amount: $amount) {
     id
     money
     username
+  }
+}
+`
+
+export const ADD_VIDEO_TO_PLAN = gql`
+mutation AddContentVideoToPlan($planId: String, $title: String, $description: String, $content: String, $tag: String) {
+  addContentVideoToPlan(planId: $planId, title: $title, description: $description, content: $content, tag: $tag) {
+    id
+    planVideos {
+      id
+      content
+      title
+    }
+    planImage {
+      title
+      id
+      content
+    }
+  }
+}
+`
+
+export const ADD_IMAGE_TO_PLAN = gql`
+mutation AddContentImageToPlan($planId: String, $title: String, $description: String, $content: String, $tag: String) {
+  addContentImageToPlan(planId: $planId, title: $title, description: $description, content: $content, tag: $tag) {
+    id
+    planVideos {
+      id
+      content
+      title
+    }
+    planImage {
+      title
+      id
+      content
+    }
   }
 }
 `

@@ -55,26 +55,28 @@ export default function Login1({navigation, setToken}) {
                   style={styles.input}
                   value={username}
                   onChangeText={text => setUsername(text)}
-                  placeholderTextColor="#a565f2"
+                  placeholder="Username"
+                  placeholderTextColor="gray"
                 />
                 <TextInput
                   style={styles.input}
                   value={password}
                   onChangeText={text => setPassword(text)}
-                  placeholderTextColor="#a565f2"
+                  placeholderTextColor={"gray"}
+                  placeholder="Password"
                   secureTextEntry
                 />
                 <Button title="Iniciar sesión" onPress={handleSubmit} color="#a565f2"  />
                 <TouchableOpacity
                 style={{
                   alignItems: "center",
-                  marginTop: 20
+                  marginTop: 20,
                 }}
                   onPress={() => {
                     navigation.navigate("Register")
                   }}
                 >
-                  <Text>Registrarse</Text>
+                  <Text style={{color: "white"}}>Registrarse</Text>
                 </TouchableOpacity>
             </View>
       </View>

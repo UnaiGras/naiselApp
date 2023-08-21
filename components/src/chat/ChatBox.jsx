@@ -236,7 +236,6 @@ export const ChatScreen = ({navigation, route}) => {
     <View style={styles.inputContainer}>
     <TextInput
       style={styles.input}
-      placeholder="Escribe un mensaje..."
       value={message}
       onChangeText={setMessage}
     />
@@ -263,22 +262,26 @@ const styles = StyleSheet.create({
       alignItems: "center",
       bottom: 0,
       padding: 10,
-      backgroundColor: "#101010"
+      backgroundColor: "#101010",
+      height: 130
     },
     input: {
       flex: 1,
       borderWidth: 1,
-      borderColor: "#ccc",
-      borderRadius: 8,
+      borderRadius: 30,
       paddingVertical: 8,
       paddingHorizontal: 16,
       marginRight: 8,
+      bottom: 20,
+      height: 50,
+      backgroundColor: "#252525"
     },
     sendButton: {
       backgroundColor: "#a565f2",
       borderRadius: 8,
       paddingVertical: 8,
       paddingHorizontal: 16,
+      bottom: 20
     },
     sendButtonText: {
       color: "#fff",
