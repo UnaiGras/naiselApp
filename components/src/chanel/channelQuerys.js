@@ -25,3 +25,11 @@ query Query($creatorId: String) {
 }
 `
 
+export const ME = gql`
+query Me {
+  me {
+    id
+  }
+}
+`
+

@@ -65,3 +65,19 @@ mutation CreateChannel($name: String, $description: String, $photo: String) {
     description
   }
 }`
+
+export const STATS_INFO = gql`
+  query StatsInfo {
+    statsInfo {
+      username
+      name
+      money
+      email
+      profilePhoto
+      plans {
+        # Aquí asumo que cada plan puede tener un campo 'id' u otro identificador único.
+        id
+      }
+    }
+  }
+`;

@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { GET_CHANEL } from './channelQuerys';
 import { useQuery } from '@apollo/client';
 import { useEffect } from 'react';
+import ME from "./channelQuerys"
 
 export const ChannelScreen = ({navigation, route }) => {
 
@@ -20,6 +21,8 @@ export const ChannelScreen = ({navigation, route }) => {
             console.log(err)
         }
     });
+
+    const {data: mydata} = useQuery(ME)
 
     const ChannelHeader = () => {
         return (
@@ -53,6 +56,29 @@ export const ChannelScreen = ({navigation, route }) => {
         }
     }, [data])
 
+    const MessageRenderer = ({ item }) => {
+        if (item.messageType === 'basic') {
+            return (
+                <View style={styles.messageContainer}>
+                    <Text style={styles.messageSender}>{item.sender.name}</Text>
+                    <Text style={styles.messageContent}>{item.content}</Text>
+                </View>
+            );
+        }
+    
+        if (item.messageType === 'photo') {
+            return (
+                <View style={styles.messageContainer}>
+                    <Text style={styles.messageSender}>{item.sender.name}</Text>
+                    <Image source={{ uri: item.messageImage }} style={styles.messageImage} />
+                    <Text style={styles.messageContent}>{item.content}</Text>
+                </View>
+            );
+        }
+    
+        return null;
+    };
+
     return (
         <>
             <View style={styles.container}>
@@ -60,31 +86,25 @@ export const ChannelScreen = ({navigation, route }) => {
                 <>
                     <ChannelHeader/>
                     <View style={{ flex: 1 }}>
-                        { chanelInfo && chanelInfo.messages && chanelInfo.messages.length > 0 &&
+                    {chanelInfo.messages?.length > 0 ? (
                             <FlatList
                                 data={chanelInfo.messages}
                                 keyExtractor={(item) => item._id}
-                                renderItem={({ item }) => (
-                                    <View style={styles.messageContainer}>
-                                        <Text style={styles.messageSender}>{item.sender.name}</Text>
-                                        <Text style={styles.messageContent}>{item.content}</Text>
-                                    </View>
-                                )}
+                                renderItem={({ item }) => <MessageRenderer item={item} />}
                             />
-                        }
-                        { chanelInfo && chanelInfo.messages && chanelInfo.messages.length === 0 &&
-                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center"}}>
-                                <View style={{alignItems: "center"}}>
-                                    <Ionicons name="chatbubbles-outline" size={100} color="gray"/>
-                                    <Text style={styles.noChatsText}>Parece que este canal no tiene ningun mensaje!!</Text>
-                                    <Text style={styles.noChatsText}>Explora con quien puedes hablar.</Text>
-                                </View>
+                        ) : (
+                            <View style={styles.noChatsContainer}>
+                                <Ionicons name="chatbubbles-outline" size={100} color="gray"/>
+                                <Text style={styles.noChatsText}>Parece que este canal no tiene ningún mensaje!!</Text>
+                                <Text style={styles.noChatsText}>Explora con quién puedes hablar.</Text>
                             </View>
-                        }
+                        )}
                     </View>
+
                     <TouchableOpacity style={styles.floatingButton} onPress={goToModel}>
                         <Ionicons name="chatbubble-ellipses-outline" size={32} color="white" />
                     </TouchableOpacity>
+
                 </>
                 }
             </View>
@@ -162,7 +182,23 @@ const styles = StyleSheet.create({
     noChatsText: {
         color: "gray",
 
-    }
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 16,
+        backgroundColor: '#151515',
+        borderTopWidth: 1,
+        borderTopColor: '#a565f2',
+    },
+    input: {
+        flex: 1,
+        backgroundColor: '#101010',
+        color: 'white',
+        paddingHorizontal: 16,
+        borderRadius: 8,
+    },
 });
 
 
