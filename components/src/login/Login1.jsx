@@ -1,86 +1,84 @@
-import { useMutation } from "@apollo/client";
-import React, {useEffect, useState } from "react";
-import { View, Text, TextInput, StyleSheet,Button, Image } from "react-native";
-import { LOGIN } from "./loginQueries";
-import { TouchableOpacity } from "react-native-gesture-handler";
-//hacer las querys para representar las paginas de usuario
+import React, { useEffect, useState } from 'react';
+import { View, TextInput, StyleSheet, Image, Text, Button, TouchableOpacity } from 'react-native';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useMutation } from '@apollo/client';
+import { LOGIN } from './loginQueries';
 
-export default function Login1({navigation, setToken}) {
+export default function Login1({ navigation, setToken }) {
 
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
+    const [error, setError] = useState('');
 
     const [login, result] = useMutation(LOGIN, {
-        onError: error => {
-            console.log(error)
-        }
-    })
-
+        onError: (error) => {
+            console.log(error);
+        },
+    });
 
     useEffect(() => {
-        if(result.data){
-            const {value: token} = result.data.login
-            setToken(token)
-            
+        if (result.data) {
+            const { value: token } = result.data.login;
+            setToken(token);
         }
-    }, [result.data])
+    }, [result.data]);
 
+    const loginSchema = Yup.object().shape({
+        username: Yup.string().required('El nombre de usuario es requerido'),
+        password: Yup.string().required('La contraseña es requerida'),
+    });
 
-    const handleSubmit = () => {
-        console.log({username, password})
-        login({
-            variables: {
-                username: username, 
-                password: password
-            }
-        })
-    }
+    const formik = useFormik({
+        initialValues: { username: '', password: '' },
+        validationSchema: loginSchema,
+        onSubmit: (values) => {
+            login({
+                variables: {
+                    username: values.username,
+                    password: values.password,
+                },
+            });
+        },
+    });
 
-    return(
+    return (
         <View style={styles.container}>
             <View style={styles.formContainer}>
-              <Image 
-              source={require("../../../assets/logo.png")}
-              style={{
-                width: 170,
-                height: 170,
-                marginBottom: 2,
-                alignSelf: "center",
-                borderRadius: 20
-              }}
-              />
-              <Text style={styles.naisel}>NaiselApp</Text>
-                <TextInput
-                  style={styles.input}
-                  value={username}
-                  onChangeText={text => setUsername(text)}
-                  placeholder="Username"
-                  placeholderTextColor="gray"
+                <Image
+                    source={require('../../../assets/logo.png')}
+                    style={styles.imageStyle}
                 />
+                <Text style={styles.naisel}>NaiselApp</Text>
                 <TextInput
-                  style={styles.input}
-                  value={password}
-                  onChangeText={text => setPassword(text)}
-                  placeholderTextColor={"gray"}
-                  placeholder="Password"
-                  secureTextEntry
+                    style={styles.input}
+                    value={formik.values.username}
+                    onChangeText={formik.handleChange('username')}
+                    onBlur={formik.handleBlur('username')}
+                    placeholder="Username"
+                    placeholderTextColor="gray"
                 />
-                <Button title="Iniciar sesión" onPress={handleSubmit} color="#a565f2"  />
+                {formik.touched.username && formik.errors.username && <Text style={{ color: 'red' }}>{formik.errors.username}</Text>}
+                <TextInput
+                    style={styles.input}
+                    value={formik.values.password}
+                    onChangeText={formik.handleChange('password')}
+                    onBlur={formik.handleBlur('password')}
+                    placeholderTextColor={"gray"}
+                    placeholder="Password"
+                    secureTextEntry
+                />
+                {formik.touched.password && formik.errors.password && <Text style={{ color: 'red' }}>{formik.errors.password}</Text>}
+                <Button title="Iniciar sesión" onPress={formik.handleSubmit} color="#a565f2" />
                 <TouchableOpacity
-                style={{
-                  alignItems: "center",
-                  marginTop: 20,
-                }}
-                  onPress={() => {
-                    navigation.navigate("Register")
-                  }}
+                    style={styles.registerLink}
+                    onPress={() => {
+                        navigation.navigate('Register');
+                    }}
                 >
-                  <Text style={{color: "white"}}>Registrarse</Text>
+                    <Text style={styles.registerText}>Registrarse</Text>
                 </TouchableOpacity>
             </View>
-      </View>
-    )
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -114,5 +112,11 @@ const styles = StyleSheet.create({
       alignSelf: "center",
       marginBottom: 20,
       color: "white"
+    },
+    imageStyle: {
+      width: 200,
+      height: 200,
+      alignSelf: "center",
+      borderRadius: 20
     }
   });

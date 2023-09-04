@@ -5,17 +5,24 @@ import { REGISTER } from "./loginQueries";
 import * as ImagePicker from 'expo-image-picker'
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+
+
+
+
+const registerSchema = yup.object().shape({
+    name: yup.string().required('El nombre es requerido'),
+    email: yup.string().email('Correo electrónico no válido').required('El correo electrónico es requerido'),
+    username: yup.string().required('El nombre de usuario es requerido'),
+    password: yup.string().min(8, 'La contraseña debe tener al menos 8 caracteres').required('La contraseña es requerida'),
+    phone: yup.string().required('El número de teléfono es requerido'),
+});
  
 
 
 export default function Register({navigation}) {
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
     const [image, setImage] = useState('')
-    const [phone, setPhone] = useState('')
-
     const [addUser, result] = useMutation(REGISTER, {
         onError: error => {
             console.log(error)
@@ -67,43 +74,29 @@ export default function Register({navigation}) {
         
     }
 
-
-    const handleSubmit = () => {
-        console.log({username, password, name, email})
-        addUser({
-        variables: 
-        {
-            profilePhoto: image,
-            username: username, 
-            password: password,
-            name: name,
-            email: email
-        
-        }
-    })
-    }
     
-    //const validateEmail = (email) => {
-    //    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    //    if (!email.match(regex)) {
-    //      setError('Dirección de correo electrónico no válida');
-    //      return false;
-    //    }
-    //    setError('');
-    //    return true;
-    //  };
-    //
-    ////	^([a-zA-Z0-9@*#]{8,15})$
-    //
-    //const validatePsswd = (email) => {
-    //    const regex = /^([a-zA-Z0-9@*#]{8,22})$/;
-    //    if (!email.match(regex)) {
-    //      setError('Contraseña no valida');
-    //      return false;
-    //    }
-    //    setError('');
-    //    return true;
-    //  };
+    const formik = useFormik({
+        initialValues: {
+            name: '',
+            email: '',
+            username: '',
+            password: '',
+            phone: ''
+        },
+        validationSchema: registerSchema,
+        onSubmit: (values) => {
+            addUser({
+                variables: 
+                {
+                    profilePhoto: image,
+                    username: values.username, 
+                    password: values.password,
+                    name: values.name,
+                    email: values.email
+                }
+            });
+        }
+    });
 
 
     return(
@@ -140,44 +133,65 @@ export default function Register({navigation}) {
 
                     }}>
 
-                    <TextInput
-                        style={styles.input}
-                        value={name}
-                        placeholder="Tu Nombre"
-                        onChangeText={text => setName(text)}
+                        <TextInput
+                            style={styles.input}
+                            value={formik.values.name}
+                            onChangeText={formik.handleChange('name')}
+                            onBlur={formik.handleBlur('name')}
+                            placeholder="Tu Nombre"
                         />
+                        {formik.touched.name && formik.errors.name ? (
+                            <Text style={styles.error}>{formik.errors.name}</Text>
+                        ) : null}
 
-                    <TextInput
-                        style={styles.input}
-                        value={email}
-                        placeholder="email"
-                        onChangeText={text => setEmail(text)}
+                        <TextInput
+                            style={styles.input}
+                            value={formik.values.email}
+                            onChangeText={formik.handleChange('email')}
+                            onBlur={formik.handleBlur('email')}
+                            placeholder="Email"
                         />
+                        {formik.touched.email && formik.errors.email ? (
+                            <Text style={styles.error}>{formik.errors.email}</Text>
+                        ) : null}
 
-                    <TextInput
-                        style={styles.input}
-                        value={username}
-                        placeholder="Username"
-                        onChangeText={text => setUsername(text)}
+                        <TextInput
+                            style={styles.input}
+                            value={formik.values.username}
+                            onChangeText={formik.handleChange('username')}
+                            onBlur={formik.handleBlur('username')}
+                            placeholder="Username"
                         />
+                        {formik.touched.username && formik.errors.username ? (
+                            <Text style={styles.error}>{formik.errors.username}</Text>
+                        ) : null}
 
-                    <TextInput
-                        style={styles.input}
-                        value={password}
-                        placeholder="Password"
-                        onChangeText={text => setPassword(text)}
-                        secureTextEntry
+                        <TextInput
+                            style={styles.input}
+                            value={formik.values.password}
+                            onChangeText={formik.handleChange('password')}
+                            onBlur={formik.handleBlur('password')}
+                            placeholder="Password"
+                            secureTextEntry
                         />
-                    <TextInput
-                        style={styles.input}
-                        value={phone}
-                        placeholder="Numero"
-                        onChangeText={text => setPhone(text)}
+                        {formik.touched.password && formik.errors.password ? (
+                            <Text style={styles.error}>{formik.errors.password}</Text>
+                        ) : null}
+
+                        <TextInput
+                            style={styles.input}
+                            value={formik.values.phone}
+                            onChangeText={formik.handleChange('phone')}
+                            onBlur={formik.handleBlur('phone')}
+                            placeholder="Número"
                         />
+                        {formik.touched.phone && formik.errors.phone ? (
+                            <Text style={styles.error}>{formik.errors.phone}</Text>
+                        ) : null}
                     </View>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={handleSubmit}
+                        onPress={formik.handleSubmit}
                         >
                             <Text style={{
                                 padding: 10,

@@ -17,7 +17,7 @@ const App = () => {
   const [client, setClient] = useState(
     new ApolloClient({
     link: createUploadLink({
-      uri: 'http://192.168.1.19:4000/',
+      uri: 'http://192.168.0.13:4000/graphql',
       headers: {
         'authorization': `bearer `
       }
@@ -69,7 +69,7 @@ const App = () => {
     setClient(
       new ApolloClient({
       link: createUploadLink({
-        uri: 'http://192.168.1.19:4000/',
+        uri: 'http://192.168.0.13:4000/graphql',
         headers: {
           'authorization': `bearer ${token}`
         }

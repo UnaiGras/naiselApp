@@ -46,6 +46,10 @@ export const ProfileScreen = ({ navigation }) => {
       // Lógica para invitar amigos
     };
 
+    const handleMetricsPress = () => {
+      navigation.navigate("UserMetrics")
+    }
+
     return (
       <View style={styles.container}>
     { profInfo &&
@@ -64,6 +68,9 @@ export const ProfileScreen = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.PremiumButton} onPress={handleCreateChannelPress}>
             <Text style={styles.buttonText}>Crear un Canal</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.PremiumButton} onPress={handleMetricsPress}>
+            <Text style={styles.buttonText}>Metricas</Text>
         </TouchableOpacity>
           </>
         }

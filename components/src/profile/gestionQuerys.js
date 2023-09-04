@@ -81,3 +81,22 @@ export const STATS_INFO = gql`
     }
   }
 `;
+
+export const GET_USER_INFO = gql`
+query {
+  getUserInfo {
+      plansInfo {
+          plan {
+              planName
+          }
+          purchasedByCount
+          image
+      }
+      money
+    channelInfo {
+      channelMembers
+      channelName
+    }
+  }
+}
+`;

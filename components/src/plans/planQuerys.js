@@ -98,3 +98,10 @@ mutation AddContentImageToPlan($planId: String, $title: String, $description: St
   }
 }
 `
+
+
+export const CREATE_CHECKOUT_SESSION = gql`
+query Query($planId: String!) {
+  createCheckoutSession(planId: $planId)
+}
+`;

@@ -22,6 +22,7 @@ import { ChannelScreen } from "./components/src/chanel/chanelScreen";
 import { ChannelDetailScreen } from "./components/src/chanel/channelDetails";
 import PlanContentForm from "./components/src/plans/addConentToPlan";
 import PlanContentDisplay from "./components/src/chanel/planMedia";
+import UserMetrics from "./components/src/profile/userMetrics";
 
 const Stack = createStackNavigator()
 
@@ -279,6 +280,19 @@ export default function Navigation() {
                 <Stack.Screen
                     name="PlanContentDisplay"
                     component={PlanContentDisplay}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#151515',
+                            shadowColor: "#191919",
+                        },
+                        headerTitleStyle: {
+                            color: "white"
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name="UserMetrics"
+                    component={UserMetrics}
                     options={{
                         headerStyle: {
                             backgroundColor: '#151515',

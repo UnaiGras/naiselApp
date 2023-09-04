@@ -1,21 +1,23 @@
-import { useMutation, useQuery } from '@apollo/client';
+import {  useQuery, useLazyQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TextInput, StyleSheet, Alert, TouchableOpacity } from "react-native";
-import { CardField, usePaymentSheet, useConfirmPayment } from "@stripe/stripe-react-native";
-import { REQUEST_PLAN, SUBSCRIBE_TO_PLAN } from './planQuerys';
+import { 
+  View, 
+  Text, 
+  Image, 
+  StyleSheet, 
+  Alert, 
+  TouchableOpacity, 
+  Linking 
+} from "react-native";
+import { REQUEST_PLAN, CREATE_CHECKOUT_SESSION } from './planQuerys';
 import AnimatedLottieView from "lottie-react-native";
-import { DEPOSIT, GET_PAYMENT_SHEET } from "./planQuerys";
+
 
 
 const PlanScreen = ({ navigation, route}) => {
 
     const [plan, setPlan] = useState(null)
     const [loadingAnimation, setLoadingAnimation] = useState(false)
-    const [setedAmount, setSetedAmount] = useState(false)
-    const [amount, setAmount] = useState(0)
-    const [ready, setReady] = useState(false)
-    const {initPaymentSheet, presentPaymentSheet, loading} = usePaymentSheet()
-
 
     const planId = route.params.data
 
@@ -28,24 +30,7 @@ const PlanScreen = ({ navigation, route}) => {
         }
     })
 
-    const [subscribeToPlan, {data: response, loding}] = useMutation(SUBSCRIBE_TO_PLAN, {
-      onError: err => {
-        console.log(err)
-      }
-    })
-
-    const [createPaymentSheet, {data, error}] = useMutation(GET_PAYMENT_SHEET, {
-      onError: err => {
-          console.log(err)
-      }
-  })
-
-  const [deposit, {data: depositResponse}] = useMutation(DEPOSIT, {
-      onError: err => {
-          console.log(err)
-      }
-  })
-
+    const [createCheckoutSession, {data, error}] = useLazyQuery(CREATE_CHECKOUT_SESSION);
 
     const handleAuthorProfilePress = () => {
         if (plan){
@@ -53,69 +38,34 @@ const PlanScreen = ({ navigation, route}) => {
         }
     };
 
-    const initializePaymentSheet = async() => {
-       
-      
-      await createPaymentSheet({
-          variables: {amount: howMuch}
-      })
-    }
 
     const handleGetPlanPress = () => {
-      subscribeToPlan({
-        variables: {
-          planId: planId
-        }
-      })
+      console.log("has entrado en handle")
+      console.log(plan.id)
+      createCheckoutSession({
+          variables: {
+              planId: plan.id
+          }
+      });
     };
 
-    const presentSheet = async() => {
-      if (data){
-          const {customerId, clientSecret} = data.createPaymentSheet
-          console.log(customerId, clientSecret)
-          const initResponse = await initPaymentSheet({
-              merchantDisplayName: "Deposit_Wallet",
-              paymentIntentClientSecret: clientSecret,
-              customerId: customerId,
-              appearance: {
-                  colors: {
-                      primary: "#151515",
-                      background: "#191919"
-                  },
-                  shapes: {
-                      borderRadius: 10
-                  }
+    useEffect(() => {
+      if (data && data.createCheckoutSession) {
+          const handleOpenURL = async () => {
+              const supported = await Linking.canOpenURL(data.createCheckoutSession);
+              if (supported) {
+                  Linking.openURL(data.createCheckoutSession);
+              } else {
+                  console.error("Don't know how to open this URL:", data.createCheckoutSession);
               }
-          })
-
-          if (initResponse.error) {
-              Alert.alert(`Error code: ${initResponse.error.code}--`, initResponse.error.message)
-          }
-
-          await presentPaymentSheet()
-    }
-    }
+          };
   
-    useEffect(() => {
-        if (data) {
-            presentSheet()  
-        }
-    }, [data])
-
-
-    const handle = ( ) => {
-        console.log('klklklk')
-        setSetedAmount(true)
-    }
-
-    useEffect(() => {
-      if (response){
-        setLoadingAnimation(true)
-        setTimeout(() => {
-          navigation.goBack()
-        }, 2000)
+          handleOpenURL();
       }
-    }, [response])
+      if (error) {
+        console.log(error)
+      }
+  }, [data, error]);
 
     return (
       <View style={styles.container}>
@@ -132,20 +82,6 @@ const PlanScreen = ({ navigation, route}) => {
                 <Text style={styles.price}>{plan.price} €</Text>
                 <TouchableOpacity style={styles.getPlanButton} onPress={handleGetPlanPress}>
                   <Text style={styles.getPlanButtonText}>Obtener plan</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                onPress={initializePaymentSheet}
-                style={{
-                    backgroundColor: '#00c1b9',
-                    paddingVertical: 10,
-                    paddingHorizontal: 50,
-                    alignSelf: 'center',
-                    borderRadius: 15
-                }}   
-            >
-                <Text style={{ fontSize: 22, fontStyle: 'italic', fontWeight: 'bold'}}>
-                    Depositar
-                </Text>
                 </TouchableOpacity>
             </View>
             { loadingAnimation === true &&
