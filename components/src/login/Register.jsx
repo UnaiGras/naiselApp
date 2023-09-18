@@ -195,7 +195,7 @@ export default function Register({navigation}) {
                         >
                             <Text style={{
                                 padding: 10,
-                                fontSize: 14, 
+                                fontSize: 14,
                                 fontStyle: 'italic', 
                                 fontWeight: '700'
 

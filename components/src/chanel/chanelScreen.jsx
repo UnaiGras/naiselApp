@@ -1,17 +1,26 @@
 import React, {useState} from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { 
+    View, 
+    Text, 
+    FlatList, 
+    StyleSheet, 
+    Image, 
+    TouchableOpacity 
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { GET_CHANEL } from './channelQuerys';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { useEffect } from 'react';
 import ME from "./channelQuerys"
+import { SEND_NEW_MESSAGE } from './channelQuerys';
 
 export const ChannelScreen = ({navigation, route }) => {
 
     const {planId} = route.params
     const {creatorId} = route.params
-
     const [chanelInfo, setChanelInfo] = useState(null)
+    const [messageToSend, setMessageToSend] = useState("");
+    const isCreator = mydata?.me.id === creatorId;
 
     const { loading, error, data } = useQuery(GET_CHANEL, {
         variables: {
@@ -23,6 +32,8 @@ export const ChannelScreen = ({navigation, route }) => {
     });
 
     const {data: mydata} = useQuery(ME)
+
+    const [sendNewMessage, {data: messageResponse}] = useMutation(SEND_NEW_MESSAGE)
 
     const ChannelHeader = () => {
         return (
@@ -101,9 +112,43 @@ export const ChannelScreen = ({navigation, route }) => {
                         )}
                     </View>
 
-                    <TouchableOpacity style={styles.floatingButton} onPress={goToModel}>
-                        <Ionicons name="chatbubble-ellipses-outline" size={32} color="white" />
-                    </TouchableOpacity>
+                    {!isCreator ? (
+                        <TouchableOpacity style={styles.floatingButton} onPress={goToModel}>
+                            <Ionicons name="chatbubble-ellipses-outline" size={32} color="white" />
+                        </TouchableOpacity>
+                    ) : (
+                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, marginBottom: 10 }}>
+                       <TextInput
+                           style={{ flex: 1, borderColor: 'gray', borderWidth: 1, borderRadius: 5, padding: 10 }}
+                           value={messageToSend}
+                           onChangeText={setMessageToSend}
+                           placeholder="Escribe tu mensaje..."
+                       />
+                       <TouchableOpacity onPress={pickImage}>
+                           <Ionicons name="image" size={30} color={selectedImage ? "blue" : "gray"} />
+                       </TouchableOpacity>
+                       <TouchableOpacity 
+                           style={{ padding: 10, backgroundColor: '#3498db', marginLeft: 10, borderRadius: 5 }}
+                           onPress={() => {
+                               // Implementa la mutación aquí
+                               const messageType = selectedImage ? "photo" : "basic";
+                              
+                               sendNewMessage({ 
+                                   variables: { 
+                                    chatId: chanelInfo.id,
+                                    content: messageToSend, 
+                                    messageType: messageType, 
+                                    messageImage: selectedImage 
+                                   } 
+                               })
+                               setMessageToSend("");
+                               setSelectedImage(null); // Reset the image
+                           }}
+                       >
+                           <Text style={{ color: 'white' }}>Enviar</Text>
+                       </TouchableOpacity>
+                        </View>
+                    )}
 
                 </>
                 }

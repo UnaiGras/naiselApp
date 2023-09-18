@@ -33,3 +33,14 @@ query Me {
 }
 `
 
+export const SEND_NEW_MESSAGE = gql`
+mutation AddNewMessage($userId: String!, $chatId: String!, $message: String!, $messageType: String!, $messageImage: String) {
+  newMessage(userId: $userId, chatId: $chatId, message: $message, messageType: $messageType, messageImage: $messageImage) {
+    chatId
+    message
+    messageType
+    messageImage
+  }
+}
+`
+
