@@ -3,14 +3,19 @@ import { gql } from "@apollo/client";
 
 export const GET_CHANEL = gql`
 query ChanelInfo($creatorId: String) {
-    chanelInfo(creatorId: $creatorId) {
+  chanelInfo(creatorId: $creatorId) {
+    id
+    name
+    photo
+    description
+    messages {
+      content
+      messageImage
+      messageType
       id
-      name
-      photo
-      description
-      messages
     }
   }
+}
 `
 
 export const GET_COMMON_PLANS = gql`
@@ -34,13 +39,38 @@ query Me {
 `
 
 export const SEND_NEW_MESSAGE = gql`
-mutation AddNewMessage($userId: String!, $chatId: String!, $message: String!, $messageType: String!, $messageImage: String) {
-  newMessage(userId: $userId, chatId: $chatId, message: $message, messageType: $messageType, messageImage: $messageImage) {
-    chatId
-    message
-    messageType
+mutation NewMessage($message: String, $messageType: String, $messageImage: String) {
+  newMessage(message: $message, messageType: $messageType, messageImage: $messageImage) {
+    id
+    content
     messageImage
+    messageType
   }
 }
 `
+
+export const GET_IMAGES_BY_PLAN = gql`
+  query GetContentImagesByPlan($planId: ID!) {
+    getContentImagesByPlan(planId: $planId) {
+      id
+      title
+      descrition
+      content
+      tag
+    }
+  }
+`;
+
+export const GET_VIDEOS_BY_PLAN = gql`
+query GetContentVideosByPlan($planId: ID!) {
+  getContentVideosByPlan(planId: $planId) {
+    content
+    descrition
+    id
+    tag
+    thumbnail
+    title
+  }
+}
+`;
 

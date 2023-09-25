@@ -1,26 +1,29 @@
-import React, {useState} from "react";
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from "react-native";
-import {useQuery} from "@apollo/client"
+import React, { useState, useRef, useEffect } from "react";
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Animated } from "react-native";
+import { useQuery } from "@apollo/client";
 import { CHAT_LIST } from "./homeQuerys";
 import { Ionicons } from "@expo/vector-icons";
 
 export const ChatsList = ({navigation}) => {
-
-    const [chatList, setChatList] = useState()
+    const [chatList, setChatList] = useState();
+    const fadeInAnimation = useRef(new Animated.Value(0)).current;
 
     const {data} = useQuery(CHAT_LIST, {
-        onError: err => {
-            console.log(err, "ChatList")
-        },
-        onCompleted: info => {
-            const reverse = info.requestChats.chats.slice().reverse()
-            setChatList(reverse)
-        }
-    })
+        onError: err => console.log(err, "ChatList"),
+        onCompleted: info => setChatList(info.requestChats.chats.slice().reverse())
+    });
 
-    return(
-        <View style={{flex:1}}>
-            { data &&
+    useEffect(() => {
+        Animated.timing(fadeInAnimation, {
+            toValue: 1,
+            duration: 1500,
+            useNativeDriver: true
+        }).start();
+    }, []);
+
+    return (
+        <Animated.View style={{flex: 1, opacity: fadeInAnimation}}>
+            { data ? (
                 <FlatList
                     data={chatList}
                     renderItem={({ item }) => (
@@ -29,18 +32,16 @@ export const ChatsList = ({navigation}) => {
                         </TouchableOpacity>
                     )}
                 />
-            }
-            {!data &&
+            ) : (
                 <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
                     <View style={{alignItems: "center"}}>
                         <Ionicons name="albums" size={200} color="gray"/>
                         <Text style={styles.noChatsText}>Parece que no tienes ningun chat!!</Text>
                         <Text style={styles.noChatsText}>Explora con quien puedes hablar.</Text>
                     </View>
-                    
                 </View>
-            }
-        </View>
+            )}
+        </Animated.View>
     )
 }
 

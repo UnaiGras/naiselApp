@@ -21,8 +21,12 @@ import { CreateChannelScreen } from "./components/src/profile/createChannelScree
 import { ChannelScreen } from "./components/src/chanel/chanelScreen";
 import { ChannelDetailScreen } from "./components/src/chanel/channelDetails";
 import PlanContentForm from "./components/src/plans/addConentToPlan";
-import PlanContentDisplay from "./components/src/chanel/planMedia";
 import UserMetrics from "./components/src/profile/userMetrics";
+import { VideosScreen } from "./components/src/chanel/videosScreen";
+import { ImagesScreen } from "./components/src/chanel/ImagesScreen";
+import VideoDetail from "./components/src/chanel/videoDetail";
+import PlanContentDisplay from "./components/src/chanel/planMedia";
+
 
 const Stack = createStackNavigator()
 
@@ -293,6 +297,32 @@ export default function Navigation() {
                 <Stack.Screen
                     name="UserMetrics"
                     component={UserMetrics}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#151515',
+                            shadowColor: "#191919",
+                        },
+                        headerTitleStyle: {
+                            color: "white"
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name="VideoDetail"
+                    component={VideoDetail}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#151515',
+                            shadowColor: "#191919",
+                        },
+                        headerTitleStyle: {
+                            color: "white"
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name="VideosScreen"
+                    component={VideosScreen}
                     options={{
                         headerStyle: {
                             backgroundColor: '#151515',

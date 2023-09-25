@@ -78,6 +78,7 @@ export const ChannelDetailScreen = ({route, navigation}) => {
             <View style={styles.descriptionContainer}>
                 <Text style={styles.descriptionText}>Planes en posesión</Text>
             </View>
+            <View style={{marginVertical: 50}}>
             {data && (
                 <FlatList
                     data={data.requestContent}
@@ -85,7 +86,7 @@ export const ChannelDetailScreen = ({route, navigation}) => {
                     keyExtractor={(plan) => plan.id}
                 />
             )}
-
+            </View>
         </ScrollView>
     );
 }
@@ -107,11 +108,13 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(0, 0, 0, 0.75)', // Esto agrega una sombra detrás del texto para que sea más legible
         textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 10,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        paddingLeft: 10
     },
     memberCount: {
         fontSize: 16,
         color: 'white',
+        paddingLeft: 10
     },
     iconContainer: {
         flexDirection: 'row', 

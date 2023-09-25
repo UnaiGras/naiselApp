@@ -2,51 +2,38 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { GET_PLAN_CONTENT } from '../chat/chatQuerys';
 import { useQuery } from '@apollo/client';
+import { ImagesScreen } from './ImagesScreen';  // Asegúrate de que la ruta sea correcta
 
-const PlanContentDisplay = ({ route }) => {
+const PlanContentDisplay = ({ navigation, route }) => {
+  console.log("Render PlanContentDisplay")
   const { planId } = route.params;
-  const {data} = useQuery(GET_PLAN_CONTENT, {
-    variables: {
-        planId: planId
-    }
-  });
 
+  const [selectedComponent, setSelectedComponent] = useState("null");
+
+
+  const { data } = useQuery(GET_PLAN_CONTENT, { variables: { planId } });
   const plan = data?.getPlanContentById;
 
-  const [showImages, setShowImages] = useState(false);
-  const [showVideos, setShowVideos] = useState(false);
-
   return (
-    <ScrollView style={{backgroundColor: "#101010"}}>
-    <View style={styles.container}>
-      
-      <Image source={{ uri: plan?.photo }} style={styles.planImage} />
-      <Text style={styles.planName}>{plan?.planName}</Text>
+    <ScrollView style={{ backgroundColor: "#101010" }}>
+      <View style={styles.container}>
+        <Image source={{ uri: plan?.photo }} style={styles.planImage} />
+        <Text style={styles.planName}>{plan?.planName}</Text>
 
-      <TouchableOpacity style={styles.planCard} onPress={() => setShowImages(!showImages)}>
-        <Text style={styles.planTitle}>Imágenes ({plan?.planImage.length})</Text>
-        {showImages && (
-          <ScrollView style={styles.planContent}>
-            {plan?.planImage.map(img => (
-              <Image key={img.id} source={{ uri: img.content }} style={styles.planContentImage} />
-            ))}
-          </ScrollView>
-        )}
-      </TouchableOpacity>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={[styles.planCard, styles.button]} onPress={() => setSelectedComponent('images')}>
+            <Text style={styles.planTitle}>Imágenes</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity style={styles.planCard} onPress={() => setShowVideos(!showVideos)}>
-        <Text style={styles.planTitle}>Videos ({plan?.planVideos.length})</Text>
-        {showVideos && (
-          <ScrollView style={styles.planContent}>
-            {plan?.planVideos.map(video => (
-              // Asumo que el video tiene un thumbnail. Si no es así, esto se puede ajustar.
-              <Image key={video.id} source={{ uri: video.thumbnail }} style={styles.planContentImage} />
-            ))}
-          </ScrollView>
-        )}
-      </TouchableOpacity>
-      
-    </View>
+          <TouchableOpacity style={[styles.planCard, styles.button]} onPress={() => navigation.navigate("VideosScreen", {planId: planId})}>
+            <Text style={styles.planTitle}>Videos</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.contentContainer}>
+          {selectedComponent === 'images' && <ImagesScreen planId={planId} />}
+        </View>
+      </View>
     </ScrollView>
   );
 }
@@ -90,7 +77,22 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     marginBottom: 10,
-  }
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 20,
+  },
+  button: {
+    flex: 1,
+    margin: 5,
+  },
+  contentContainer: {
+    marginTop: 20,
+    width: '100%',
+  },
 });
+
 
 export default PlanContentDisplay;

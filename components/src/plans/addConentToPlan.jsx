@@ -12,6 +12,8 @@ const PlanContentForm = ({route, navigation}) => {
   const [description, setDescription] = useState('');
   const [tag, setTag] = useState('');
   const [contentType, setContentType] = useState('');
+  const [thumbnailUrl, setThumbnailUrl] = useState('');
+
 
   const [addVideoToPlan, { data: videoData }] = useMutation(ADD_VIDEO_TO_PLAN);
   const [addImageToPlan, { data: imageData }] = useMutation(ADD_IMAGE_TO_PLAN);
@@ -50,6 +52,11 @@ const PlanContentForm = ({route, navigation}) => {
     .then(data => {
       setContentUrl(data.secure_url);
       setContentType(type);
+
+      if (type === 'video') {
+        const thumbnailTransformedUrl = `${data.secure_url.split(".")[0]}.jpg`;
+        setThumbnailUrl(thumbnailTransformedUrl);
+      }
     })
   };
 
@@ -59,6 +66,7 @@ const PlanContentForm = ({route, navigation}) => {
       title: name,
       description,
       content: contentUrl,
+      thumbnail: thumbnailUrl,
       tag
     };
 
