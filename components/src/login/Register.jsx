@@ -218,7 +218,9 @@ const styles = StyleSheet.create({
         padding: 10,
         marginTop: 25,
         width: "90%",
-        alignSelf: "center"
+        alignSelf: "center",
+        borderWidth: 0.5,  // Añade un borde sutíl
+        borderColor: '#333'
     },
     layout: {
         backgroundColor: 'black',
@@ -238,23 +240,25 @@ const styles = StyleSheet.create({
 
     },
     error: {
-        color: 'red',
+        color: '#FF3B30',  // Color estándar de error en iOS
+        paddingLeft: 10,  // Añade algo de padding para el mensaje de error
     },
     button: {
         alignItems: 'center',
         backgroundColor: '#a565f2',
+        borderWidth: 1, 
+        borderColor: '#a565f2',
         marginVertical: 30,
         borderRadius: 15,
         width: "80%",
         alignSelf: "center",
-        shadowColor: "#00c1b9",
+        shadowColor: "#a565f2",
         shadowOffset: {
-            width: 30,
-            height: 15,
+            width: 3,
+            height: 7,
         },
         shadowOpacity: 0.90,
-        shadowRadius: 24.00,
-
-        elevation: 20,
+        shadowRadius: 5.00,
+        elevation: 5,
     }
 }) 

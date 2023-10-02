@@ -12,6 +12,10 @@ export const VideosScreen = ({ route, navigation }) => {
     variables: { planId },
     onError: err => {
       console.log(err)
+    },
+    onCompleted: response => {
+      setVideos(response.getContentVideosByPlan)
+      console.log("this is the response", response)
     }
   });
 
@@ -22,14 +26,6 @@ export const VideosScreen = ({ route, navigation }) => {
     // Suponiendo que tienes un componente VideoDetail donde se reproduce el video.
     navigation.navigate('VideoDetail', { video });
   };
-
-  
-  useEffect(() => {
-    if (data) {
-      console.log(data)
-      setVideos(data.getContentVideosByPlan)
-    }
-  }, [data])
 
   
   return (
@@ -57,7 +53,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   videoCard: {
-    flexDirection: 'row',
     marginVertical: 8,
     padding: 12,
     backgroundColor: '#242424',  // Color de fondo más claro para cada tarjeta
@@ -65,15 +60,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   thumbnail: {
-    width: 150,
-    height: 150,
-    borderRadius: 8,  // Bordes redondeados para la miniatura
-    marginRight: 10,
+    width: "100%",
+    height: 300,
+    borderRadius: 10
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#f5f5f5',  // Color de texto claro para el título
+    color: '#f5f5f5',
+    alignSelf: "flex-start"  // Color de texto claro para el título
   },
   description: {
     fontSize: 14,

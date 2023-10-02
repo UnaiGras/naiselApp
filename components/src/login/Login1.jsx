@@ -67,7 +67,11 @@ export default function Login1({ navigation, setToken }) {
                     secureTextEntry
                 />
                 {formik.touched.password && formik.errors.password && <Text style={{ color: 'red' }}>{formik.errors.password}</Text>}
-                <Button title="Iniciar sesión" onPress={formik.handleSubmit} color="#a565f2" />
+                <TouchableOpacity 
+                style={styles.loginButton}
+                onPress={formik.handleSubmit}>
+                    <Text>Iniciar Sesión</Text>
+                </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.registerLink}
                     onPress={() => {
@@ -118,5 +122,16 @@ const styles = StyleSheet.create({
       height: 200,
       alignSelf: "center",
       borderRadius: 20
+    },
+    registerText: {
+        color: "#a565f2",
+        alignSelf: "center",
+        marginVertical: 20
+    },
+    loginButton: {
+        backgroundColor: "#a565f2",
+        borderRadius: 20,
+        alignItems: "center",
+        padding:10
     }
   });

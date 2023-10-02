@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import { 
     View, 
     Text, 
@@ -8,7 +8,8 @@ import {
     TouchableOpacity,
     TextInput,
     KeyboardAvoidingView,
-    Platform
+    Platform,
+    Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { GET_CHANEL, ME } from './channelQuerys';
@@ -16,15 +17,25 @@ import { useQuery, useMutation } from '@apollo/client';
 import { useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { SEND_NEW_MESSAGE } from './channelQuerys';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export const ChannelScreen = ({navigation, route }) => {
 
     const {planId} = route.params
     const {creatorId} = route.params
+    console.log({
+        creatorId: creatorId
+    })
     const [chanelInfo, setChanelInfo] = useState(null)
     const [messageToSend, setMessageToSend] = useState("");
     const [contentUrl, setContentUrl] = useState("")
-    const isCreator = true
+    const [isCreator, setIsCreator] = useState(false)
+    const [showEventPopup, setShowEventPopup] = useState(false);
+    const [eventMessage, setEventMessage] = useState("");
+
+    const [lineWidth, setLineWidth] = useState(new Animated.Value(0)); // Para la línea
+    const fadeAnim = useRef(new Animated.Value(0)).current; // Para la animación de fade in/out
+
 
     const { loading, error, data } = useQuery(GET_CHANEL, {
         variables: {
@@ -105,26 +116,78 @@ export const ChannelScreen = ({navigation, route }) => {
 
     useEffect(() => {
         if (data) {
-            setChanelInfo(data.chanelInfo)
-            console.log(data)
-            console.log(chanelInfo?.messages)
+            setChanelInfo(data.chanelInfo);
+            const eventMessageFound = data.chanelInfo?.messages?.find(msg => msg.messageType === 'event');
+            console.log(eventMessageFound, "<<<.----- este es el eventMessageFound")
+            if (eventMessageFound) {
+                setEventMessage(eventMessageFound.content)
+                setShowEventPopup(true)
+                // Fade in
+                Animated.timing(fadeAnim, {
+                    toValue: 1,
+                    duration: 500,
+                    useNativeDriver: true
+                }).start();
+    
+                // Animar línea
+                Animated.timing(lineWidth, {
+                    toValue: 1,
+                    duration: 5000,
+                    useNativeDriver: false
+                }).start();
+    
+                setTimeout(() => {
+                    // Fade out
+                    Animated.timing(fadeAnim, {
+                        toValue: 0,
+                        duration: 500,
+                        useNativeDriver: true
+                    }).start(() => setShowEventPopup(false));
+                }, 5000);
+            }
         }
-    }, [data])
+    }, [data]);
+    
+
+    useEffect(() => {
+        if (mydata) {
+            console.log("my id:", mydata.me.id)
+            if (creatorId === mydata.me.id) {
+                setIsCreator(true)
+            }else {
+                console.log("No eres el creador de este canal")
+            }
+        }
+    }, [mydata])
 
     const MessageRenderer = ({ item }) => {
         if (item.messageType === 'basic') {
             return (
-                <View style={styles.messageContainer}>
+                <LinearGradient
+                colors={["#191919", "#a565f2"]} 
+                style={styles.messageContainer}>
                     <Text style={styles.messageContent}>{item.content}</Text>
-                </View>
+                </LinearGradient>
             );
         }
     
         if (item.messageType === 'photo') {
             return (
-                <View style={styles.messageContainer}>
+                <LinearGradient
+                colors={["#191919", "#a565f2"]}
+                style={styles.messageContainer}>
                     <Image source={{ uri: item.messageImage }} style={styles.messageImage} />
                     <Text style={styles.messageContent}>{item.content}</Text>
+                </LinearGradient>
+            );
+        }
+
+        if (item.messageType === 'event') {
+            return (
+                <View style={styles.eventMessage}>
+                    <Text style={{ fontSize: 13, fontWeight: 'bold', color: 'white' }}>
+                        {item.content}
+                    </Text>
                 </View>
             );
         }
@@ -134,6 +197,51 @@ export const ChannelScreen = ({navigation, route }) => {
 
     return (
         <>
+        { showEventPopup && 
+                        <Animated.View style={{ 
+                            position: 'absolute', 
+                            top: 140, // Ajusta según la altura de tu header
+                            left: 0,
+                            right: 0,
+                            alignItems: 'center',
+                            zIndex: 1000, 
+                            opacity: fadeAnim,
+                            padding: 20, // Para darle espacio alrededor del pop-up
+                        }}>
+                            <View style={{ 
+                                backgroundColor: '#212121',
+                                padding: 15,
+                                borderRadius: 15,
+                                shadowColor: "#000",
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 3.84,
+                                elevation: 5,
+                                width: '100%', // Para que el pop-up no sea demasiado ancho
+                            }}>
+                                <Text style={{ 
+                                    fontSize: 18, 
+                                    fontWeight: 'bold', 
+                                    color: 'white', 
+                                    textAlign: 'center'
+                                }}>
+                                    {eventMessage}
+                                </Text>
+                                <Animated.View style={{
+                                    height: 4,
+                                    backgroundColor: '#a565f2',
+                                    marginTop: 10,
+                                    width: lineWidth.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: ['0%', '100%']
+                                    })
+                                }} />
+                            </View>
+                        </Animated.View>
+                                    }
             <View style={styles.container}>
             <KeyboardAvoidingView 
                 behavior={Platform.OS === "ios" ? "padding" : "height"} 
@@ -163,13 +271,13 @@ export const ChannelScreen = ({navigation, route }) => {
                             <Ionicons name="chatbubble-ellipses-outline" size={32} color="white" />
                         </TouchableOpacity>
                     ) : (
-                        <View style={{ flexDirection: 'row', alignItems: 'center',backgroundColor: "#171717", padding: 5, marginBottom: 10, borderRadius: 10 }}>
-                            <View style={{ alignItems: 'center', flex: 1, borderRadius: 5 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center',backgroundColor: "#202020", padding: 10, marginBottom: 20, borderRadius: 20 }}>
+                            <View style={{ flex: 1, borderRadius: 5 }}>
                                  {contentUrl ? (
                                      <Image source={{ uri: contentUrl }} style={{ width: "100%", height: 300, borderRadius: 10 }} />
                                  ) : null}
                                  <TextInput
-                                     style={{ color:"white", fontSize: 18, height: 100, width: "100%" }}
+                                     style={{ color:"white", fontSize: 18, maxHeight: 100, width: "100%" }}
                                      value={messageToSend}
                                      onChangeText={setMessageToSend}
                                      placeholder="Escribe tu mensaje..."
@@ -177,13 +285,13 @@ export const ChannelScreen = ({navigation, route }) => {
                                  />
                              </View>
                         {!contentUrl &&
-                       <TouchableOpacity onPress={pickMedia} style={{ padding: 10, backgroundColor: '#8a2be2', marginLeft: 10, borderRadius: 15 }}>
-                       <Ionicons name="image" size={30} color={contentUrl ? "#8a2be2" : "gray"} />
+                       <TouchableOpacity onPress={pickMedia} style={{ padding: 10, backgroundColor: '#a565f2', marginLeft: 10, borderRadius: 15 }}>
+                       <Ionicons name="image" size={30} color={contentUrl ? "#101010" : "#101010"} />
 
                        </TouchableOpacity>
                        }
                        <TouchableOpacity 
-                           style={{ padding: 10, backgroundColor: '#a565f2', marginLeft: 10, borderRadius: 5 }}
+                           style={{ padding: 10, backgroundColor: '#a565f2', marginLeft: 10, borderRadius: 10, height: 50, justifyContent: "center" }}
                            onPress={() => {
 
                                console.log({
@@ -229,10 +337,12 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     messageContainer: {
-        backgroundColor: '#151515',
-        padding: 8,
-        borderRadius: 8,
-        marginVertical: 4,
+        backgroundColor: '#191919',
+        padding: 10,
+        borderRadius: 10,
+        marginVertical: 20,
+        alignSelf: "flex-start",
+        maxWidth: 290
     },
     messageSender: {
         color: 'white',
@@ -240,6 +350,8 @@ const styles = StyleSheet.create({
     },
     messageContent: {
         color: 'white',
+        fontWeight: "500",
+        fontSize: 15,
     },
     floatingButton: {
         bottom: 16,
@@ -303,6 +415,29 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         borderRadius: 8,
     },
+    eventMessage: {
+        padding: 5, 
+        borderWidth: 0.5, 
+        backgroundColor: "#191919",
+        borderColor: '#a565f2', 
+        borderRadius: 15,
+        minHeight: 40,
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
+        shadowColor: "#a565f2",
+        shadowOffset: {
+            height: 4,
+            width: 2
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+    },
+    messageImage: {
+        height: 300,
+        width: 270,
+        borderRadius: 10
+    }
 });
 
 

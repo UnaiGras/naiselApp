@@ -7,12 +7,15 @@ const styles = StyleSheet.create({
     container: {
         position: "absolute",
         bottom: 0,
-        width: "100%",
-        backgroundColor: "#191919",
+        width: "90%",
+        backgroundColor: "#252525",
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
-        paddingVertical: 5
+        alignSelf: "center",
+        borderRadius: 20,
+        paddingVertical: 10,
+        marginBottom: 30
     },
     button: {
         alignItems: "center",
@@ -40,6 +43,20 @@ const AppBar = ({data, navigation, position}) => {
                 <Ionicons name="search-outline" size={25} color="white" />
                 )}
                 <Text style={styles.text}>Buscar</Text>
+
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                        navigation.navigate('Inbox', {maker: data.me.planMaker})
+                    }}
+                >
+                {position === "Inbox" ? (
+                <Ionicons name="mail" size={25} color="#a565f2"/>
+                ):(
+                <Ionicons name="mail-outline" size={25} color="white" />
+                )}
+                <Text style={styles.text}>Bandeja</Text>
 
             </TouchableOpacity>
             <TouchableOpacity

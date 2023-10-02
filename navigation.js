@@ -26,7 +26,9 @@ import { VideosScreen } from "./components/src/chanel/videosScreen";
 import { ImagesScreen } from "./components/src/chanel/ImagesScreen";
 import VideoDetail from "./components/src/chanel/videoDetail";
 import PlanContentDisplay from "./components/src/chanel/planMedia";
-
+import Inbox from "./components/src/tray/trayScreen";
+import MessageScreen from "./components/src/tray/mailView";
+import SendMailScreen from "./components/src/tray/sendMailScreen";
 
 const Stack = createStackNavigator()
 
@@ -323,6 +325,45 @@ export default function Navigation() {
                 <Stack.Screen
                     name="VideosScreen"
                     component={VideosScreen}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#151515',
+                            shadowColor: "#191919",
+                        },
+                        headerTitleStyle: {
+                            color: "white"
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name="Inbox"
+                    component={Inbox}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#151515',
+                            shadowColor: "#191919",
+                        },
+                        headerTitleStyle: {
+                            color: "white"
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name="MessageScreen"
+                    component={MessageScreen}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#151515',
+                            shadowColor: "#191919",
+                        },
+                        headerTitleStyle: {
+                            color: "white"
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name="SendMailScreen"
+                    component={SendMailScreen}
                     options={{
                         headerStyle: {
                             backgroundColor: '#151515',

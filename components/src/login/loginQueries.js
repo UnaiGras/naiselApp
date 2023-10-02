@@ -17,3 +17,12 @@ mutation Mutation($username: String, $email: String, $name: String, $profilePhot
   }
 }
 `
+
+export const VERIFY_EMAIL_CODE = gql`
+    mutation VerifyEmailCode($username: String!, $code: String!) {
+        verifyEmailCode(username: $username, code: $code) {
+            success
+            message
+        }
+    }
+`;

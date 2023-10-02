@@ -42,3 +42,9 @@ query GetPlanContentById($planId: String) {
   }
 }
 `
+
+export const CREATE_TOKENS_CHECKOUT = gql`
+mutation CreateCheckoutForTokens($amount: Float!, $creatorId: String!, $modelId: String!) {
+  createCheckoutForTokens(amount: $amount, creatorId: $creatorId, modelId: $modelId)
+}
+`

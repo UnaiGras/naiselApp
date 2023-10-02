@@ -54,7 +54,7 @@ export const GET_IMAGES_BY_PLAN = gql`
     getContentImagesByPlan(planId: $planId) {
       id
       title
-      descrition
+      description
       content
       tag
     }
@@ -65,7 +65,7 @@ export const GET_VIDEOS_BY_PLAN = gql`
 query GetContentVideosByPlan($planId: ID!) {
   getContentVideosByPlan(planId: $planId) {
     content
-    descrition
+    description
     id
     tag
     thumbnail

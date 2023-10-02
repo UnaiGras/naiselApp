@@ -1,9 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Video } from 'expo-av';
 
 const VideoDetail = ({ route }) => {
-  const { video } = route.params; // Asumimos que pasas el objeto del video completo a través de navigation
+  const { video } = route.params;
+  const [isFullScreen, setFullScreen] = useState(false);
+
+  const toggleFullScreen = () => {
+    setFullScreen(!isFullScreen);
+  };
 
   return (
     <View style={styles.container}>
@@ -15,11 +20,14 @@ const VideoDetail = ({ route }) => {
         resizeMode="cover"
         shouldPlay
         useNativeControls
-        style={styles.videoPlayer}
+        style={isFullScreen ? styles.videoPlayerFull : styles.videoPlayerSmall}
       />
+      <TouchableOpacity onPress={toggleFullScreen}>
+        <Text style={{ color: 'white' }}>{isFullScreen ? "Minimizar" : "Ampliar"}</Text>
+      </TouchableOpacity>
       <View style={styles.videoDetails}>
         <Text style={styles.title}>{video.title}</Text>
-        <Text style={styles.description}>{video.descrition}</Text>
+        <Text style={styles.description}>{video.description}</Text>
       </View>
     </View>
   );
@@ -30,14 +38,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#181818',
   },
-  videoPlayer: {
-    flex: 1,
+  videoPlayerSmall: {
     width: '100%',
+    aspectRatio: 16/9,
+    height: (16/9) * 130, // Un ancho de 200 como ejemplo. Ajusta según tus necesidades.
+  },
+  videoPlayerFull: {
+    flex: 1,
     aspectRatio: 16/9,
   },
   videoDetails: {
     padding: 10,
-    borderTopColor: '#303030', // Una línea sutil para separar el video de los detalles
+    borderTopColor: '#303030',
     borderTopWidth: 1,
   },
   title: {

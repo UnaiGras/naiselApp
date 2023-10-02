@@ -24,6 +24,7 @@
     "expo-build": "^0.0.0",
     "expo-document-picker": "~11.2.2",
     "expo-image-picker": "~14.1.1",
+    "expo-linear-gradient": "~12.1.2",
     "expo-location": "~15.1.1",
     "expo-notifications": "~0.18.1",
     "expo-permissions": "~14.1.1",

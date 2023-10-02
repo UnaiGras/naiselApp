@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
 
 export const NOT_PROFILE_INFO = gql`
-query UserProfileInfo($userId: String) {
-    userProfileInfo(userId: $userId) {
-      email
+query Query($userId: String) {
+  userProfileInfo(userId: $userId) {
+    email
       id
       name
       planMaker
@@ -17,6 +17,13 @@ query UserProfileInfo($userId: String) {
         planName
         price
         type
+      }
+      channel {
+      membersCount
+        id
+        name
+        photo
+        description
       }
     }
   }

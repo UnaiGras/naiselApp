@@ -3,7 +3,7 @@ import { View, TextInput, TouchableOpacity, StyleSheet, Text, Image, ScrollView 
 import { Ionicons } from "@expo/vector-icons";
 import { MESSAGE_RESPONSE, AUTHOR_INFO_BY_PLANID } from "./chatQuerys";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { FetchVoice, GetVoices, GetModels } from "../../../helpers";
+import { FetchVoice } from "../../../helpers";
 import { Audio } from "expo-av";
 
 export const ChatScreen = ({navigation, route}) => {
@@ -15,6 +15,8 @@ export const ChatScreen = ({navigation, route}) => {
   const [messages, setMessages] = useState([])
 
   const [isQuerying, setIsQuerying] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
+  const [selectedAmount, setSelectedAmount] = useState(0);
 
   const {data: authorInfo} = useQuery(AUTHOR_INFO_BY_PLANID, {
     variables: {
@@ -29,6 +31,24 @@ export const ChatScreen = ({navigation, route}) => {
       console.log(err)
     }
   })
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  // Función para cerrar el modal
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleBuyTokens = () => {
+    if (selectedAmount > 0) {
+      // Realiza la consulta GraphQL con selectedAmount y authorInfo.id
+      // Utiliza la misma lógica que mostré en la respuesta anterior para realizar la consulta
+    }
+    // Cierra el modal después de realizar la compra
+    closeModal();
+  };
 
   const addAudioMessage = (audioURI, message) => {
     const newMessage = {
@@ -163,6 +183,9 @@ export const ChatScreen = ({navigation, route}) => {
         </TouchableOpacity>
       }
       <ScrollView>
+      <TouchableOpacity onPress={openModal} style={styles.buyButton}>
+          <Text style={styles.buyButtonText}>Comprar Tokens</Text>
+        </TouchableOpacity>
       {messages.map((msg, index) => (
         <View key={index}>
         { msg.sender === true && msg.text !== false &&
@@ -247,6 +270,24 @@ export const ChatScreen = ({navigation, route}) => {
       <Ionicons name="send" size={24} color="#fff" />
     </TouchableOpacity>
   </View>
+  {isModalVisible && (
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Selecciona la cantidad de Tokens</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Cantidad"
+            keyboardType="numeric"
+            value={selectedAmount.toString()}
+            onChangeText={(text) => setSelectedAmount(parseInt(text, 10))}
+          />
+          <TouchableOpacity onPress={handleBuyTokens} style={styles.buyButton}>
+            <Text style={styles.buyButtonText}>Comprar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>Cerrar</Text>
+          </TouchableOpacity>
+        </View>
+      )}
   </>
   );
 };
@@ -294,5 +335,47 @@ const styles = StyleSheet.create({
       borderRadius: 17,
       shadowColor: "#a565f2",
       elevation: 10
-    }
+    },
+    modalContainer: {
+      backgroundColor: '#fff',
+      padding: 20,
+      borderRadius: 10,
+      alignItems: 'center',
+      elevation: 5, // Sombra en Android
+      shadowColor: '#000', // Sombra en iOS
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      marginBottom: 10,
+      width: 200,
+      height: 40,
+    },
+    buyButton: {
+      backgroundColor: '#a565f2',
+      borderRadius: 8,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+    },
+    buyButtonText: {
+      color: '#fff',
+      fontSize: 16,
+    },
+    closeButton: {
+      marginTop: 10,
+    },
+    closeButtonText: {
+      color: '#a565f2',
+      fontSize: 16,
+    },
   });

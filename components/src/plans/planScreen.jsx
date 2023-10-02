@@ -128,11 +128,19 @@ const styles = StyleSheet.create({
   authorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginVertical: 20,
     backgroundColor: "#151515",
     borderRadius: 8,
     paddingVertical: 10,
-    justifyContent: "center"
+    justifyContent: "center",
+    shadowColor: "#a565f2",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 4,
   },
   authorPhoto: {
     width: 32,
