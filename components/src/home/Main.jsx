@@ -2,14 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { TouchableOpacity, View, StyleSheet, Text} from 'react-native';
 import Login1 from "../login/Login1";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {useLazyQuery} from "@apollo/client";
-//import * as Notifications from 'expo-notifications'
-//import { ADD_DEVICE_TOKEN } from "./queries";
+import {useLazyQuery, useMutation} from "@apollo/client";
 import { Ionicons } from "@expo/vector-icons";
 import {AuthContext} from "../../../App"
 import { ME_QUERY } from "../personalQuerys";
 import AppBar from "./AppBar";
 import { ChatsList } from "./chatsLists";
+import { UPDATE_DEVICE_TOKEN } from "./homeQuerys";
+import * as Notifications from 'expo-notifications';
 
 
 const saveTokenToLocalStorage = async (token) => {
@@ -31,41 +31,39 @@ const MainScreen = ({ navigation, test}) => {
     const [token, setUserToken]= useContext(AuthContext)
 
 
-    //const [showTerms, setShowTerms] = useState(false);
-    //const [termsCheck, setTermsCheck] = useState(false);
-    //const [deviceToken, setDeviceToken] = useState('')
+    const [showTerms, setShowTerms] = useState(false);
 
-    //useEffect(() => {
-    //  async function checkIfTermsAccepted() {
-    //    try {
-    //      const value = await AsyncStorage.getItem('termsAccepted');
-    //      if (value === null) {
-    //        // Los términos aún no han sido aceptados, mostramos el componente de términos y condiciones
-    //        setShowTerms(true);
-    //      }
-    //    } catch (error) {
-    //      console.log('Error al obtener el valor de AsyncStorage:', error);
-    //    }
-    //  }
-    //  checkIfTermsAccepted();
-    //}, []);
-    //
-    //const aceptTermsAndConditions = async () => {
-    //  try {
-    //    // Guardamos en AsyncStorage que los términos han sido aceptados
-    //    await AsyncStorage.setItem('termsAccepted', 'true');
-    //    setShowTerms(false);
-    //  } catch (error) {
-    //    console.log('Error al guardar el valor de AsyncStorage:', error);
-    //  }
-    //};
-    //
-    //
-    //const [addDeviceToken, {data: mamahuevo, loading: cargando, error: failure}] = useMutation(ADD_DEVICE_TOKEN, {
-    //    onError: error => {
-    //        console.log(error)
-    //    }
-    //})
+    useEffect(() => {
+      async function checkIfTermsAccepted() {
+        try {
+          const value = await AsyncStorage.getItem('termsAccepted');
+          if (value === null) {
+            // Los términos aún no han sido aceptados, mostramos el componente de términos y condiciones
+            setShowTerms(true);
+          }
+        } catch (error) {
+          console.log('Error al obtener el valor de AsyncStorage:', error);
+        }
+      }
+      checkIfTermsAccepted();
+    }, []);
+    
+    const aceptTermsAndConditions = async () => {
+      try {
+        // Guardamos en AsyncStorage que los términos han sido aceptados
+        await AsyncStorage.setItem('termsAccepted', 'true');
+        setShowTerms(false);
+      } catch (error) {
+        console.log('Error al guardar el valor de AsyncStorage:', error);
+      }
+    };
+    
+    
+    const [addDeviceToken, {data: mamahuevo, loading: cargando, error: failure}] = useMutation(UPDATE_DEVICE_TOKEN, {
+        onError: error => {
+            console.log(error)
+        }
+    })
 
     const [me, {loading, error, data, refetch}] = useLazyQuery(ME_QUERY, {
         onError: error => {
@@ -94,10 +92,10 @@ const MainScreen = ({ navigation, test}) => {
         })
         console.log(tokwen)
         setUserToken(tokwen)
-        //getDeviceToken()
-        //.then(deviceToken => addDeviceToken({
-        //    variables: {deviceToken}
-        //}))
+        getDeviceToken()
+        .then(deviceToken => addDeviceToken({
+            variables: {deviceToken}
+        }))
     }, [tokwen]
     )
 
@@ -110,6 +108,11 @@ const MainScreen = ({ navigation, test}) => {
         {tokwen && data ? (
           <>
           <View style={{height: "100%"}}>
+          <TermsModal
+            isVisible={showTerms}
+            onClose={() => setShowTerms(false)}
+            onAccept={aceptTermsAndConditions}
+          />
               <ChatsList navigation={navigation}/>
           </View>
                 <View>
@@ -124,85 +127,54 @@ const MainScreen = ({ navigation, test}) => {
     )
 }
 
+const TermsModal = ({ isVisible, onClose, onAccept }) => {
+  if (!isVisible) return null;
 
-//async function getDeviceToken() {
-//    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-//    let finalStatus = existingStatus;
-//    if (existingStatus !== 'granted') {
-//      const { status } = await Notifications.requestPermissionsAsync();
-//      finalStatus = status;
-//    }
-//    if (finalStatus !== 'granted') {
-//      alert('Failed to get push token for push notification!');
-//      return;
-//    }
-//    token = (await Notifications.getExpoPushTokenAsync()).data;
-//    console.log(token);
-//
-//    return token;
-//}
+  return (
+    <View style={styles.termsLayer}>
+      <View style={styles.termsContainer}>
+        <View style={styles.termsHeader}>
+          <Text style={styles.headerText}>Términos y Condiciones</Text>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>Cerrar</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.termsContent}>
+          <Text style={styles.termsText}>
+            // Aquí va todo el contenido de tus términos y condiciones.
+          </Text>
+        </View>
+        <View style={styles.agreeContainer}>
+          <TouchableOpacity onPress={onAccept} style={styles.acceptButton}>
+            <Text style={styles.acceptButtonText}>Aceptar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+
+async function getDeviceToken() {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+
+    return token;
+}
 
 
 
 const styles = StyleSheet.create({
-    button: {
-        position: 'absolute',
-        backgroundColor: '#191919',
-        paddingHorizontal: 150,
-        bottom: 20,
-        alignSelf: "center",
-        justifyContent: 'center',
-        height: 45,
-        borderRadius: 30,
-        borderWidth: 0.2,
-        borderColor: '#00c1b9',
-        alignItems: 'center',
-        shadowColor: "#00c1b9",
-        shadowOffset: {
-            width: 0,
-            height: 15,
-        },
-        shadowOpacity: 0.70,
-        shadowRadius: 18.00,
-
-        elevation: 10,
-
-    },
-    searchButton: {
-        position: 'absolute',
-        backgroundColor: '#191919',
-        paddingHorizontal: 150,
-        bottom: 75,
-        alignSelf: "center",
-        justifyContent: 'center',
-        height: 45,
-        borderRadius: 30,
-        borderWidth: 0.2,
-        borderColor: '#00c1b9',
-        alignItems: 'center',
-        shadowColor: "#00c1b9",
-        shadowOffset: {
-            width: 0,
-            height: 10,
-        },
-        shadowOpacity: 0.70,
-        shadowRadius: 18.00,
-
-        elevation: 10,
-    },
-    search: {
-        position: 'absolute',
-        height: 30,
-        borderWidth: 1,
-        borderColor: 'gray',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 320,
-        alignSelf: 'center',
-        top: 20,
-        borderRadius: 20,
-
-    },
     icon: {
         height: 20,
         width: 20

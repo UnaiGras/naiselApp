@@ -1,15 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TextInput, StyleSheet, Image } from "react-native";
 import { TRENDING_PLANS } from "./searchQuerys";
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
+
+
+const ITEMS = [
+  {
+    name: "Juegos", 
+    icon: "game-controller",
+    color: "gray"
+  },{
+    name: "Valor",
+    icon: "book",
+    color: "gray"
+  },{
+    name: "Musica",
+    icon: "musical-notes",
+    color: "gray"
+  },{
+    name: "Noticias",
+    icon: "newspaper",
+    color: "gray"
+  }, {
+    name: "Entretenimiento",
+    icon: "tv",
+    color: "gray"
+  }]
 
 export const SearchScreen = ({navigation}) => {
 
     const [searchQuery, setSearchQuery] = useState("");
     const [list, setList] = useState({})
+    const [trend, setTrend] = useState("")
 
-    const {data} = useQuery(TRENDING_PLANS, {
+    const [requestData,{data}] = useLazyQuery(TRENDING_PLANS, {
       onError: err => {
         console.log(err)
       },
@@ -20,10 +46,15 @@ export const SearchScreen = ({navigation}) => {
       }
     })
 
-    // Función para filtrar los planes según la consulta de búsqueda
-    //const filteredPlans = plans.filter((plan) =>
-    //  plan.name.toLowerCase().includes(searchQuery.toLowerCase())
-    //);
+    useEffect(() => {
+      if (trend) {
+          requestData({
+            variables:{
+              trend: trend
+            }
+          })
+      }
+    }, [trend])
 
     const renderGridItem = ({ item }) => {
       //const isPopular = item.clients.length >= 0;
@@ -61,20 +92,43 @@ export const SearchScreen = ({navigation}) => {
       );
     };
 
+    const renderTrends = ({item}) => {
+      return (
+        <TouchableOpacity onPress={() => setTrend(item.name)} style={[styles.card, {borderColor: item.color}]}>
+            <Ionicons name={item.icon} size={24} color={item.color} />
+            <Text style={styles.cardText}>{item.name}</Text>
+        </TouchableOpacity>
+      )
+    }
+
     return (
       <View style={styles.container}>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Buscar planes"
-          value={searchQuery}
-          onChangeText={text => setSearchQuery(text)}
-        />
-    { list &&
-        <FlatList
-          data={list}
-          renderItem={renderGridItem}
+            <TextInput
+              style={styles.searchBar}
+              placeholder="Buscar planes"
+              value={searchQuery}
+              onChangeText={text => setSearchQuery(text)}
+            />
+        {!data &&
+        <View style={styles.listBox}>
+          <FlatList
+          data={ITEMS}
+          renderItem={renderTrends}
           keyExtractor={(item) => item._id}
-        />
+          numColumns={2}
+          />
+        </View>
+        }
+      {data &&
+        <View>
+        { list &&
+            <FlatList
+              data={list}
+              renderItem={renderGridItem}
+              keyExtractor={(item) => item._id}
+            />
+        }
+        </View>
         }
       </View>
     );
@@ -105,7 +159,6 @@ const LargeResponseTag = () => {
 }
 
 const styles = StyleSheet.create({
-  // ...
   
   container: {
     flex: 1,
@@ -198,6 +251,25 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginVertical: 4,
   },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 0.3,
+    borderRadius:10,
+    padding: 20,
+    margin: 10,
+    justifyContent: "space-around",
+    width: 180
+  },
+  cardText: {
+      marginLeft: 10,
+      fontSize: 24,
+      fontWeight: "bold",
+      color: "white"
+  },
+  listBox: {
+
+  }
 });
 
 

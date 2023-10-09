@@ -89,7 +89,14 @@ const styles = StyleSheet.create({
         width: "90%",
         alignSelf: "center",
         shadowColor: "#a565f2",
-        elevation: 6
+        shadowColor: "gray",
+        shadowOffset: {
+          width: 4,
+          height: 7,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 2,
+        elevation: 8,
     },
     profileBox: {
         borderRadius: 8,

@@ -9,7 +9,9 @@ import {
     TextInput,
     KeyboardAvoidingView,
     Platform,
-    Animated
+    Modal,
+    Animated,
+    Button
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { GET_CHANEL, ME } from './channelQuerys';
@@ -17,7 +19,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import { useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { SEND_NEW_MESSAGE } from './channelQuerys';
-import { LinearGradient } from 'expo-linear-gradient';
+import { CREATE_MOMENT } from './channelQuerys';
 
 export const ChannelScreen = ({navigation, route }) => {
 
@@ -32,6 +34,8 @@ export const ChannelScreen = ({navigation, route }) => {
     const [isCreator, setIsCreator] = useState(false)
     const [showEventPopup, setShowEventPopup] = useState(false);
     const [eventMessage, setEventMessage] = useState("");
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [momentMessage, setMomentMessage] = useState("");
 
     const [lineWidth, setLineWidth] = useState(new Animated.Value(0)); // Para la línea
     const fadeAnim = useRef(new Animated.Value(0)).current; // Para la animación de fade in/out
@@ -47,6 +51,16 @@ export const ChannelScreen = ({navigation, route }) => {
     });
 
     const {data: mydata} = useQuery(ME)
+
+    const [createMoment, { data: response }] = useMutation(CREATE_MOMENT, {
+        onError: err => {
+            console.log(
+                err.message, 
+                err.networkError,
+                err.graphQLErrors
+            )
+        }
+    });
 
     const [sendNewMessage, {data: messageResponse}] = useMutation(SEND_NEW_MESSAGE, {
         onError: err => {
@@ -132,7 +146,7 @@ export const ChannelScreen = ({navigation, route }) => {
                 // Animar línea
                 Animated.timing(lineWidth, {
                     toValue: 1,
-                    duration: 5000,
+                    duration: 3000,
                     useNativeDriver: false
                 }).start();
     
@@ -143,7 +157,7 @@ export const ChannelScreen = ({navigation, route }) => {
                         duration: 500,
                         useNativeDriver: true
                     }).start(() => setShowEventPopup(false));
-                }, 5000);
+                }, 3000);
             }
         }
     }, [data]);
@@ -160,25 +174,33 @@ export const ChannelScreen = ({navigation, route }) => {
         }
     }, [mydata])
 
+    const createMomentum = () => {
+        console.log({ channelId: chanelInfo.id, message: momentMessage })
+        createMoment({ variables: { 
+            channelId: chanelInfo.id, 
+            message: momentMessage 
+        } });
+        setModalVisible(false);
+        setMomentMessage("");
+    }
     const MessageRenderer = ({ item }) => {
         if (item.messageType === 'basic') {
             return (
-                <LinearGradient
-                colors={["#191919", "#a565f2"]} 
+                <View
                 style={styles.messageContainer}>
                     <Text style={styles.messageContent}>{item.content}</Text>
-                </LinearGradient>
+                </View>
             );
         }
     
         if (item.messageType === 'photo') {
             return (
-                <LinearGradient
-                colors={["#191919", "#a565f2"]}
+                <View
+
                 style={styles.messageContainer}>
                     <Image source={{ uri: item.messageImage }} style={styles.messageImage} />
                     <Text style={styles.messageContent}>{item.content}</Text>
-                </LinearGradient>
+                </View>
             );
         }
 
@@ -190,6 +212,15 @@ export const ChannelScreen = ({navigation, route }) => {
                     </Text>
                 </View>
             );
+        }
+
+        if (item.messageType === "moment") {
+            return(
+            <TouchableOpacity onPress={() => navigation.navigate('CameraComponent')} style={styles.momentMessageContainer}>
+                <Ionicons name='images' size={34} color='gray'/>
+                <Text style={styles.momentMessageContent}>Ver Momento</Text>
+            </TouchableOpacity>
+            )
         }
     
         return null;
@@ -264,6 +295,27 @@ export const ChannelScreen = ({navigation, route }) => {
                                     <Text style={styles.noChatsText}>Explora con quién puedes hablar.</Text>
                                 </View>
                             )}
+                        { messageToSend === "" &&
+                            <View>
+                            {isCreator &&
+                                <TouchableOpacity 
+                                    onPress={() => setModalVisible(true)} 
+                                    style={{ 
+                                        padding: 10, 
+                                        backgroundColor: '#a565f2', 
+                                        marginLeft: 10, 
+                                        borderRadius: 15,
+                                        position: "relative",
+                                        marginTop: -70,
+                                        alignSelf: "flex-end",
+                                        marginBottom: 10,
+                                        marginRight: 15
+                                    }}>
+                                    <Ionicons name="hourglass-outline" size={30} color="#101010" />
+                                </TouchableOpacity>
+                            }
+                            </View>
+                            }
                     </View>
 
                     {!isCreator ? (
@@ -285,10 +337,12 @@ export const ChannelScreen = ({navigation, route }) => {
                                  />
                              </View>
                         {!contentUrl &&
-                       <TouchableOpacity onPress={pickMedia} style={{ padding: 10, backgroundColor: '#a565f2', marginLeft: 10, borderRadius: 15 }}>
-                       <Ionicons name="image" size={30} color={contentUrl ? "#101010" : "#101010"} />
+                        <View>
+                            <TouchableOpacity onPress={pickMedia} style={{ padding: 10, backgroundColor: '#a565f2', marginLeft: 10, borderRadius: 15 }}>
+                                <Ionicons name="image" size={30} color={contentUrl ? "#101010" : "#101010"} />
+                            </TouchableOpacity>
+                        </View>
 
-                       </TouchableOpacity>
                        }
                        <TouchableOpacity 
                            style={{ padding: 10, backgroundColor: '#a565f2', marginLeft: 10, borderRadius: 10, height: 50, justifyContent: "center" }}
@@ -318,6 +372,49 @@ export const ChannelScreen = ({navigation, route }) => {
 
                 </>
                 }
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isModalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!isModalVisible);
+                    }}
+                >
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ 
+                            height: 200, 
+                            width: 300, 
+                            padding: 20, 
+                            backgroundColor: '#252525', 
+                            borderRadius: 10,
+                            shadowColor: "#a565f2",
+                            shadowOffset: {
+                                width: 1,
+                                height: 1,
+                            },
+                            shadowOpacity: 1,
+                            shadowRadius: 4.65, }}>
+                            <TextInput
+                                placeholder="Escribe tu moment..."
+                                value={momentMessage}
+                                onChangeText={setMomentMessage}
+                                multiline
+                                style={{ borderBottomWidth: 1, marginBottom: 15, backgroundColor: "#454545", fontSize: 20, height: 25, borderRadius: 10, padding: 5 }}
+                            />
+                       
+                            <Button 
+                                title="Crear Moment"
+                                onPress={() => {createMomentum}}
+                            />
+                           
+                            <Button 
+                                title="Cancelar"
+                                onPress={() => setModalVisible(false)}
+                                color="red"
+                            />
+                        </View>
+                    </View>
+                </Modal>
                 </KeyboardAvoidingView>
             </View>
         </>
@@ -337,7 +434,7 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     messageContainer: {
-        backgroundColor: '#191919',
+        backgroundColor: '#252525',
         padding: 10,
         borderRadius: 10,
         marginVertical: 20,
@@ -437,7 +534,30 @@ const styles = StyleSheet.create({
         height: 300,
         width: 270,
         borderRadius: 10
-    }
+    },
+    momentMessageContainer: {
+        backgroundColor: '#252525',  // Usando el color de acento para destacarlo
+        padding: 20,
+        borderRadius: 40,
+        marginVertical: 30,
+        alignSelf: "flex-end",
+        maxWidth: 290,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    
+    momentMessageContent: {
+        color: 'white',
+        fontWeight: "600",  // Haciéndolo un poco más bold que los mensajes normales
+        fontSize: 19,  // Un poco más grande que el contenido normal del mensaje
+        marginHorizontal: 8,  // Espacio entre el texto y el ícono, si decides añadir uno
+    },
+    
+    // Si decides añadir un ícono, deberás agregar un estilo para él también
+    momentMessageIcon: {
+        color: 'white',
+        fontSize: 18,  // o el tamaño que desees para el ícono
+    },
 });
 
 

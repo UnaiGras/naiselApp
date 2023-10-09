@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform } from 'react-native';
+
 import { useMutation } from '@apollo/client';
 import { SEND_MAIL } from './trayQuerys'; // Asegúrate de ajustar la ruta
 import { Ionicons } from '@expo/vector-icons';
@@ -24,6 +25,11 @@ const SendMailScreen = () => {
   };
 
   return (
+    <KeyboardAvoidingView 
+    style={{ flex: 1 }} 
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 70}
+  >
     <View style={styles.container}>
       <TextInput
         style={styles.input}
@@ -47,6 +53,7 @@ const SendMailScreen = () => {
       {loading && <Text>Cargando...</Text>}
       {error && <Text>Error: {error.message}</Text>}
     </View>
+  </KeyboardAvoidingView>
   );
 };
 

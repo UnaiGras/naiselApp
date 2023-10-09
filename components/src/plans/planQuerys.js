@@ -35,11 +35,11 @@ mutation SubscribeToPlan($planId: String) {
 `
 
 export const CREATE_PLAN = gql`
-mutation CreatePlan($planName: String, $description: String, $context: String, $price: Float, $duration: String, $type: String, $photo: String, $planTokensLenght: Int) {
-  createPlan(planName: $planName, description: $description, context: $context, price: $price, duration: $duration, type: $type, photo: $photo, planTokensLenght: $planTokensLenght) {
+mutation CreatePlan($planName: String, $description: String, $context: String, $price: Float, $duration: String, $type: String, $photo: String, $planTokensLenght: Int, $percetageForMarketer: Int, $marketerId: String, $flag: String) {
+  createPlan(planName: $planName, description: $description, context: $context, price: $price, duration: $duration, type: $type, photo: $photo, planTokensLenght: $planTokensLenght, percetageForMarketer: $percetageForMarketer, marketerId: $marketerId, flag: $flag) {
     id
-    name
     username
+    name
   }
 }
 `
@@ -105,3 +105,13 @@ query Query($planId: String!) {
   createCheckoutSession(planId: $planId)
 }
 `;
+
+export const SEARCH_USERS = gql`
+query SearchUsers($username: String) {
+  searchUsers(username: $username) {
+    id
+    username
+    profilePhoto
+  }
+}
+`

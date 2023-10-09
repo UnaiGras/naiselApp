@@ -114,7 +114,7 @@ export default function Register({navigation}) {
 
                          {!image &&
                             <View style= { { borderRadius: 100}}>
-                                <Ionicons name="image" size={200}/>
+                                <Ionicons name="image" size={200} color="gray"/>
                             </View>
                          }
                          { image &&
@@ -139,6 +139,7 @@ export default function Register({navigation}) {
                             onChangeText={formik.handleChange('name')}
                             onBlur={formik.handleBlur('name')}
                             placeholder="Tu Nombre"
+                            placeholderTextColor="white"
                         />
                         {formik.touched.name && formik.errors.name ? (
                             <Text style={styles.error}>{formik.errors.name}</Text>
@@ -150,6 +151,7 @@ export default function Register({navigation}) {
                             onChangeText={formik.handleChange('email')}
                             onBlur={formik.handleBlur('email')}
                             placeholder="Email"
+                            placeholderTextColor="white"
                         />
                         {formik.touched.email && formik.errors.email ? (
                             <Text style={styles.error}>{formik.errors.email}</Text>
@@ -161,6 +163,7 @@ export default function Register({navigation}) {
                             onChangeText={formik.handleChange('username')}
                             onBlur={formik.handleBlur('username')}
                             placeholder="Username"
+                            placeholderTextColor="white"
                         />
                         {formik.touched.username && formik.errors.username ? (
                             <Text style={styles.error}>{formik.errors.username}</Text>
@@ -173,6 +176,7 @@ export default function Register({navigation}) {
                             onBlur={formik.handleBlur('password')}
                             placeholder="Password"
                             secureTextEntry
+                            placeholderTextColor="white"
                         />
                         {formik.touched.password && formik.errors.password ? (
                             <Text style={styles.error}>{formik.errors.password}</Text>
@@ -184,6 +188,7 @@ export default function Register({navigation}) {
                             onChangeText={formik.handleChange('phone')}
                             onBlur={formik.handleBlur('phone')}
                             placeholder="Número"
+                            placeholderTextColor="white"
                         />
                         {formik.touched.phone && formik.errors.phone ? (
                             <Text style={styles.error}>{formik.errors.phone}</Text>
@@ -213,7 +218,7 @@ const styles = StyleSheet.create({
 
     input: {
         backgroundColor: '#151515',
-        color: '#ffffff',
+        color: 'white',
         borderRadius: 8,
         padding: 10,
         marginTop: 25,

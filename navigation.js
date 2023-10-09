@@ -29,6 +29,7 @@ import PlanContentDisplay from "./components/src/chanel/planMedia";
 import Inbox from "./components/src/tray/trayScreen";
 import MessageScreen from "./components/src/tray/mailView";
 import SendMailScreen from "./components/src/tray/sendMailScreen";
+import { CameraComponent } from "./components/src/chanel/momentScreen";
 
 const Stack = createStackNavigator()
 
@@ -364,6 +365,19 @@ export default function Navigation() {
                 <Stack.Screen
                     name="SendMailScreen"
                     component={SendMailScreen}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#151515',
+                            shadowColor: "#191919",
+                        },
+                        headerTitleStyle: {
+                            color: "white"
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name="CameraComponent"
+                    component={CameraComponent}
                     options={{
                         headerStyle: {
                             backgroundColor: '#151515',

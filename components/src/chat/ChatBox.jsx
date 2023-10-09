@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View, TextInput, TouchableOpacity, StyleSheet, Text, Image, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MESSAGE_RESPONSE, AUTHOR_INFO_BY_PLANID } from "./chatQuerys";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { FetchVoice } from "../../../helpers";
 import { Audio } from "expo-av";
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+
+
 
 export const ChatScreen = ({navigation, route}) => {
 
@@ -12,11 +15,14 @@ export const ChatScreen = ({navigation, route}) => {
 
   const [message, setMessage] = useState("");
 
+  const [amount, setAmount] = useState('');
+
   const [messages, setMessages] = useState([])
 
   const [isQuerying, setIsQuerying] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
-  const [selectedAmount, setSelectedAmount] = useState(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const bottomSheetModalRef = useRef(null);
 
   const {data: authorInfo} = useQuery(AUTHOR_INFO_BY_PLANID, {
     variables: {
@@ -32,6 +38,16 @@ export const ChatScreen = ({navigation, route}) => {
     }
   })
 
+
+
+  const handleOpenModal = () => {
+    bottomSheetModalRef.current.present();
+  };
+
+  const handleCloseModal = () => {
+    bottomSheetModalRef.current.dismiss();
+  };
+
   const openModal = () => {
     setIsModalVisible(true);
   };
@@ -42,7 +58,7 @@ export const ChatScreen = ({navigation, route}) => {
   };
 
   const handleBuyTokens = () => {
-    if (selectedAmount > 0) {
+    if (amount > 0) {
       // Realiza la consulta GraphQL con selectedAmount y authorInfo.id
       // Utiliza la misma lógica que mostré en la respuesta anterior para realizar la consulta
     }
@@ -140,6 +156,12 @@ export const ChatScreen = ({navigation, route}) => {
   }
 };
 
+const tokensForAmount = () => {
+  if (!amount) return 0;
+  const rate = 60 / 1.5;
+  return rate * parseFloat(amount);
+};
+
   
 
   useEffect(() => {
@@ -154,6 +176,7 @@ export const ChatScreen = ({navigation, route}) => {
 
   return (
     <>
+    <BottomSheetModalProvider>
     <View style={styles.container}>
       { authorInfo &&
         <TouchableOpacity
@@ -183,9 +206,15 @@ export const ChatScreen = ({navigation, route}) => {
         </TouchableOpacity>
       }
       <ScrollView>
-      <TouchableOpacity onPress={openModal} style={styles.buyButton}>
+
+      <View style={styles.warningContainer}>
+        <Ionicons name="alert-circle" size={40} color="#a676f2" />
+        <Text style={styles.warningText}>Oops! Necesitas más tokens.</Text>
+        <TouchableOpacity onPress={handleOpenModal} style={styles.buyButton}>
           <Text style={styles.buyButtonText}>Comprar Tokens</Text>
         </TouchableOpacity>
+      </View>
+
       {messages.map((msg, index) => (
         <View key={index}>
         { msg.sender === true && msg.text !== false &&
@@ -270,24 +299,31 @@ export const ChatScreen = ({navigation, route}) => {
       <Ionicons name="send" size={24} color="#fff" />
     </TouchableOpacity>
   </View>
-  {isModalVisible && (
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Selecciona la cantidad de Tokens</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Cantidad"
-            keyboardType="numeric"
-            value={selectedAmount.toString()}
-            onChangeText={(text) => setSelectedAmount(parseInt(text, 10))}
-          />
-          <TouchableOpacity onPress={handleBuyTokens} style={styles.buyButton}>
-            <Text style={styles.buyButtonText}>Comprar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>Cerrar</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+  <BottomSheetModal
+        ref={bottomSheetModalRef}
+        index={0}
+        snapPoints={['90%']}
+        style={styles.modalContainer}
+        backgroundStyle={{backgroundColor: "#101010", borderStyle: "dashed"}}
+      >
+        <Text style={styles.modalTitle}>Selecciona la cantidad de Tokens</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Cantidad"
+          placeholderTextColor="#FFFFFF"
+          keyboardType="numeric"
+          value={amount}
+          onFocus={handleOpenModal}
+          onChangeText={text => setAmount(text)}
+        />
+        <Text style={styles.calculationText}>
+          {`Obtendrás ${tokensForAmount().toFixed(2)} tokens por ${amount}€`}
+        </Text>
+        <TouchableOpacity onPress={handleBuyTokens} style={styles.buyButton}>
+          <Text style={styles.buyButtonText}>Comprar</Text>
+        </TouchableOpacity>
+      </BottomSheetModal>
+      </BottomSheetModalProvider>
   </>
   );
 };
@@ -301,28 +337,30 @@ const styles = StyleSheet.create({
     inputContainer: {
       flexDirection: "row",
       alignItems: "center",
+      justifyContent: "center",
       bottom: 0,
       padding: 10,
       backgroundColor: "#101010",
-      height: 130
+      height: 130,
+      width: "100%"
     },
     input: {
       flex: 1,
       borderWidth: 1,
       borderRadius: 30,
-      paddingVertical: 8,
       paddingHorizontal: 16,
       marginRight: 8,
-      bottom: 20,
       height: 50,
-      backgroundColor: "#252525"
+      backgroundColor: "#252525",
+      width: "100%"
     },
     sendButton: {
       backgroundColor: "#a565f2",
       borderRadius: 8,
       paddingVertical: 8,
-      paddingHorizontal: 16,
-      bottom: 20
+      paddingHorizontal: 20,
+      marginBottom: 20,
+      marginLeft: 20
     },
     sendButtonText: {
       color: "#fff",
@@ -337,45 +375,63 @@ const styles = StyleSheet.create({
       elevation: 10
     },
     modalContainer: {
-      backgroundColor: '#fff',
+      backgroundColor: '#101010', // Un color de fondo oscuro
       padding: 20,
       borderRadius: 10,
       alignItems: 'center',
-      elevation: 5, // Sombra en Android
-      shadowColor: '#000', // Sombra en iOS
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-    },
-    modalTitle: {
-      fontSize: 18,
+   },
+   modalTitle: {
+      fontSize: 24, // Tamaño de fuente más grande
       fontWeight: 'bold',
-      marginBottom: 10,
-    },
-    input: {
+      marginBottom: 20,
+      color: '#FFFFFF',
+   },
+   input: {
       borderWidth: 1,
       borderColor: '#ccc',
-      borderRadius: 5,
-      paddingHorizontal: 10,
-      marginBottom: 10,
-      width: 200,
-      height: 40,
-    },
-    buyButton: {
-      backgroundColor: '#a565f2',
       borderRadius: 8,
-      paddingVertical: 8,
-      paddingHorizontal: 16,
-    },
-    buyButtonText: {
+      paddingHorizontal: 15,
+      marginBottom: 20,
+      width: 250,
+      height: 50,
+      fontSize: 20, // Tamaño de fuente más grande
+      color: '#FFFFFF',
+   },
+   calculationText: {
+      fontSize: 20,
+      color: '#FFFFFF',
+      marginBottom: 20,
+   },
+   buyButton: {
+      backgroundColor: '#a565f2',
+      borderRadius: 12,
+      paddingVertical: 12,
+      paddingHorizontal: 24,
+   },
+   buyButtonText: {
       color: '#fff',
-      fontSize: 16,
-    },
-    closeButton: {
-      marginTop: 10,
-    },
-    closeButtonText: {
-      color: '#a565f2',
-      fontSize: 16,
-    },
+      fontSize: 20, // Tamaño de fuente más grande
+   },
+   warningContainer: {
+    backgroundColor: '#252525',
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    width: '80%',
+    alignSelf: "center",
+    marginTop: 200
+},
+ warningText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF', // Conservamos el texto blanco para contrastar con el fondo oscuro
+    marginBottom: 20,
+ },
+ warningIcon: {
+    color: '#a676f2', 
+    marginBottom: 20,
+    fontSize: 50,
+ },
+ 
+   
   });

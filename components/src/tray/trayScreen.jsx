@@ -11,7 +11,7 @@ export const Inbox = ({navigation, route}) => {
   const {maker} = route.params
   console.log(maker, "this is maker")
 
-  const [mails, setMails] = useState({})
+  const [mails, setMails] = useState([])
 
   const { loading, error, data } = useQuery(GET_USER_TRAY);
 
@@ -25,11 +25,12 @@ export const Inbox = ({navigation, route}) => {
   }
 
   useEffect(() => {
-      if (data) {
-        console.log(data)
-        setMails(data.getUserTray.mails)
-      }
-  }, [data])
+    if (data && data.getUserTray) {
+      console.log(data)
+      setMails(data.getUserTray.mails)
+    }
+ }, [data])
+ 
 
   if (loading) {
     return <Text>Cargando...</Text>;
@@ -64,7 +65,7 @@ export const Inbox = ({navigation, route}) => {
         )}
       />
   { maker &&
-      <TouchableOpacity style={styles.fab}>
+      <TouchableOpacity onPress={handlePressButton} style={styles.fab}>
         <Ionicons name="add" size={30} color="white" />
       </TouchableOpacity>
       }

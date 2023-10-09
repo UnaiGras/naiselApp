@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   View, 
   TextInput, 
@@ -6,15 +6,17 @@ import {
   TouchableOpacity, 
   Text, 
   Image, 
-  Switch, 
-  PanResponder,
-  ScrollView
+  Switch,
+  ScrollView,
+  KeyboardAvoidingView, 
+  Platform,
+  FlatList
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker'
 import { CREATE_PLAN } from "./planQuerys";
-import { useMutation } from "@apollo/client";
-import SliderComponent from "./percentajeBar";
+import { useQuery, useMutation } from "@apollo/client";
+import { SEARCH_USERS } from "./planQuerys";
 
 export const CreatePlanForm = () => {
   const [planName, setPlanName] = useState("");
@@ -29,17 +31,28 @@ export const CreatePlanForm = () => {
   const [pesonality, setPersonality] = useState(false)
   const [iaName, setIaName] = useState("")
   const [years, setYears] = useState(0)
+  const [searchText, setSearchText] = useState('');
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [percentageForMarketer, setPercentageForMarketer] = useState("");
+  const [flag, setFlag] = useState("")
 
-  //Estados de la linea de orcentaje de voluntarytax
 
-  const [ballPosition, setBallPosition] = useState({ x: 0, y: 0 });
-  const [value, setValue] = useState(0);
+  const { data: searchData, refetch } = useQuery(SEARCH_USERS, {
+    variables: { username: searchText },
+    skip: !searchText,
+  });
 
   const [create, {data}] = useMutation(CREATE_PLAN, {
     onError: err => {
       console.log(err)
     }
   }) 
+
+  useEffect(() => {
+    if (searchText) {
+      refetch();
+    }
+  }, [searchText]);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -61,34 +74,21 @@ export const CreatePlanForm = () => {
 
     }}
 
-    const panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (event, gesture) => {
-        const { moveX } = gesture;
-        const containerWidth = StyleSheet.flatten(styles.container).width;
-        const newPosition = (moveX / containerWidth) * 100;
-        const clampedPosition = Math.min(Math.max(newPosition, 0), 100);
-        setBallPosition({ x: clampedPosition, y: 0 }); // Actualizar ambas coordenadas
-        setValue(Number(clampedPosition.toFixed(0)));
-      },
-    });
-
     const handleUpload = (image) => {
-    const data = new FormData()
-    data.append("file", image)
-    data.append("upload_preset","slinepreset" )
-    data.append("cloud_name", "dasfna79h")
+      const data = new FormData()
+      data.append("file", image)
+      data.append("upload_preset","slinepreset" )
+      data.append("cloud_name", "dasfna79h")
 
-    fetch("https://api.cloudinary.com/v1_1/dasfna79h/image/upload", {
-        method:"post",
-        body: data
-    }).then(res =>res.json()).
-    then( data => {
-        console.log(data)
-        setImage(data.secure_url)
-    })
-    
-}
+      fetch("https://api.cloudinary.com/v1_1/dasfna79h/image/upload", {
+          method:"post",
+          body: data
+      }).then(res =>res.json()).
+      then( data => {
+          console.log(data)
+          setImage(data.secure_url)
+      })  
+  }
 
   const handleSubmit = () => {
     // Aquí puedes realizar alguna acción con los datos del formulario
@@ -104,20 +104,44 @@ export const CreatePlanForm = () => {
       variables: {
         planName: planName, 
         description: description, 
-        context: `Eres un asistente${picante} de ${years} años de edad, eres ${genere} y te llamas ${iaName}`, 
+        context: `Eres un asistente ${picante} de ${years} años de edad, eres ${genere} y te llamas ${iaName}`, 
         price: parseFloat(price), 
         duration: duration, 
         type: type, 
         photo: image,
         planTokensLenght: tokensLenght,
-        voluntaryTax: 20
+        percetageForMarketer: parseInt(percentageForMarketer, 10),
+        marketerId: selectedUser ? selectedUser.id : null,
+        flag: flag
       }
     })
 
   };
 
+  const renderUser = ({ item }) => (
+<TouchableOpacity
+  style={styles.userCard}
+  onPress={() => {
+  setSelectedUser(item)
+  setSearchText("")
+  }}
+>
+  <Image 
+    source={{ uri: item.profilePhoto }} 
+    style={styles.userImage}
+  />
+  <Text style={styles.userName}>{item.username}</Text>
+</TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
+      <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
+      
+    >
          <ScrollView>
       <View style={{width: '100%', alignItems: 'center'}}>
 
@@ -157,6 +181,14 @@ export const CreatePlanForm = () => {
           onChangeText={(text) => setPlanName(text)}
 
         />
+        <TextInput
+          style={styles.input}
+          placeholder="Que tipo de contenido es"
+          placeholderTextColor="gray"
+          value={flag}
+          onChangeText={(text) => setFlag(text)}
+
+        />
       </View>
 
       <View style={styles.inputContainer}>
@@ -169,7 +201,7 @@ export const CreatePlanForm = () => {
           multiline
         />
       </View>
-      <Text style={styles.title}>Personalidad</Text>
+      <Text style={styles.title}>Personalidad De Tu IA</Text>
       
       <View style={styles.inputContainer}>
         <TextInput
@@ -231,6 +263,29 @@ export const CreatePlanForm = () => {
           <Switch value={pesonality} onChange={() => setPersonality(!pesonality)}/>
           </View>
           <Text style={{alignSelf: "center", color: 'white'}}>¡ATENCION! Si marcas la opcion de picante tu IA respondera con intencion de copular con la otra parte</Text>
+          <View style={{marginVertical: 10, marginTop: 30}}>
+        </View>
+        <Text style={{fontSize: 18, fontWeight: "700", marginTop: 20, marginLeft: 20, color: 'white',}}>Tamaño de respuesta</Text>
+              <View style={styles.miniBox}>
+              <TouchableOpacity
+                style={[tokensLenght === 250 ? styles.buttonBoxPressed: styles.buttonBox]}
+                onPress={() => setTokensLenght(250)}
+              >
+                <Text style={styles.buttonText}>Cortas</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[tokensLenght === 500 ? styles.buttonBoxPressed: styles.buttonBox]}
+                onPress={() => setTokensLenght(500)}
+              >
+                <Text style={styles.buttonText}>Medias</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[tokensLenght === 750 ? styles.buttonBoxPressed: styles.buttonBox]}
+                onPress={() => setTokensLenght(750)}
+              >
+                <Text style={styles.buttonText}>Grande</Text>
+              </TouchableOpacity>
+            </View>
     <View style={{marginVertical: 20}}>
       <Text style={styles.title}>Precio</Text>
         
@@ -245,47 +300,60 @@ export const CreatePlanForm = () => {
         />
         <Text style={styles.text}>€</Text>
       </View>
-
-          
-        <View style={{marginVertical: 10, marginTop: 30}}>
-            <View style={styles.container} {...panResponder.panHandlers}>
-            <View style={styles.line} />
-            <View style={[styles.ball, { left: ballPosition.x }]} />
-            <View style={styles.valueContainer}>
-              <Text style={styles.value}>{value}</Text>
-            </View>
       </View>
 
+      <Text style={styles.title}>Contrato</Text>
+      <Text style={{ color: 'white'}}>Reparte las ganancias automaticamente con tu equipo</Text>
+      
+      {selectedUser && (
+        <View style={styles.largeUserCard}>
+          <Image 
+            source={{ uri: selectedUser.profilePhoto }}
+            style={styles.largeUserImage}
+          />
+          <Text style={styles.largeUserName}>{selectedUser.username}</Text>
+        </View>
+      )}
 
-        </View>
-          <View style={styles.miniBox}>
-          <TouchableOpacity
-            style={[tokensLenght === 250 ? styles.buttonBoxPressed: styles.buttonBox]}
-            onPress={() => setTokensLenght(250)}
-          >
-            <Text style={styles.buttonText}>Cortas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[tokensLenght === 500 ? styles.buttonBoxPressed: styles.buttonBox]}
-            onPress={() => setTokensLenght(500)}
-          >
-            <Text style={styles.buttonText}>Medias</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[tokensLenght === 750 ? styles.buttonBoxPressed: styles.buttonBox]}
-            onPress={() => setTokensLenght(750)}
-          >
-            <Text style={styles.buttonText}>Grande</Text>
-          </TouchableOpacity>
-        </View>
-        </View>
+
+          {/* Input para buscar usuarios */}
+          <TextInput
+            style={styles.input}
+            placeholder="Buscar usuario..."
+            placeholderTextColor="gray"
+            value={searchText}
+            onChangeText={setSearchText}
+          />
+
+          {/* Lista de resultados */}
+          {searchData && searchData.searchUsers && !selectedUser && (
+            <FlatList
+              data={searchData.searchUsers}
+              renderItem={renderUser}
+              keyExtractor={(item) => item.id.toString()}
+              style={{ marginTop: 10 }}
+            />
+          )}
+          <Text style={{fontSize: 18, fontWeight: "700", marginTop: 20, color: 'white',}}>Porcentaje a repartir</Text>
+          <View style={styles.inputContainerRow}>
+            <TextInput
+              style={styles.input}
+              placeholder="Porcentaje para el marketer"
+              placeholderTextColor="gray"
+              keyboardType="numeric"
+              value={percentageForMarketer}
+              onChangeText={(text) => setPercentageForMarketer(text)}
+            />
+            <Text style={styles.text}>%</Text>
+          </View>
         <TouchableOpacity 
       style={styles.button}
       onPress={handleSubmit} >
         <Text>Crear Plan</Text>
       </TouchableOpacity>
-
+      
       </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -378,6 +446,67 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#a565f2"
+  },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#151515",
+    color: "white",
+    marginBottom: 10
+  },
+  userCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#212121',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  userImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,  // Esto hará que la imagen sea redonda
+    marginRight: 20,   // Espacio entre la imagen y el texto
+  },
+  usernameText: {
+    color: 'white',
+    fontSize: 18
+  },
+  userName: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  selectedUserCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#212121',
+    marginVertical: 5,
+    borderRadius: 5,
+    backgroundColor: '#a565f2'
+  },
+  largeUserCard: {
+    backgroundColor: '#212121',
+    alignItems: 'center',  // Centra los elementos verticalmente
+    justifyContent: 'center',  // Centra los elementos horizontalmente
+    borderRadius: 5,
+    marginVertical: 20,
+    padding: 20,
+  },
+  largeUserImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,  // Esto hará que la imagen sea redonda
+    marginBottom: 20,  // Espacio entre la imagen y el texto
+  },
+  largeUserName: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 24,  // Aumenta el tamaño de la fuente para que sea "grande"
   }
 });
 

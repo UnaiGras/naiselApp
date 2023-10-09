@@ -74,3 +74,24 @@ query GetContentVideosByPlan($planId: ID!) {
 }
 `;
 
+export const CREATE_MOMENT = gql`
+mutation StartMoment($channelId: String, $message: String!) {
+  startMoment(channelId: $channelId, message: $message) {
+      id
+      author
+      messageType
+      content
+      channelId
+      momentFiles
+  }
+}
+`
+
+export const ADD_MOMENT_FILE = gql`
+mutation AddMomentFile($messageId: ID!, $imageUrl: String!) {
+  addMomentFile(messageId: $messageId, imageUrl: $imageUrl) {
+      id
+      momentFiles
+  }
+}
+`

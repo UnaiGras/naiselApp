@@ -37,7 +37,7 @@ export const VideosScreen = ({ route, navigation }) => {
         <TouchableOpacity style={styles.videoCard} onPress={() => handleVideoPress(item)}>
           <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
           <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.description}>{item.descrition}</Text>
+          <Text style={styles.description}>{item.description}</Text>
         </TouchableOpacity>
       )}
     />
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   thumbnail: {
     width: "100%",
-    height: 300,
+    height: 200,
     borderRadius: 10
   },
   title: {

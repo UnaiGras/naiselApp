@@ -20,3 +20,14 @@ query RequestChats {
   }
 }
 `
+
+export const UPDATE_DEVICE_TOKEN = gql`
+  mutation UpdateDeviceToken($deviceToken: String!) {
+    updateDeviceToken(deviceToken: $deviceToken) {
+      id
+      username
+      email
+      deviceToken
+    }
+  }
+`;
