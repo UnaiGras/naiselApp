@@ -18,6 +18,35 @@ import { CREATE_PLAN } from "./planQuerys";
 import { useQuery, useMutation } from "@apollo/client";
 import { SEARCH_USERS } from "./planQuerys";
 
+
+const ITEMS = [
+  {
+    key: 1,
+    name: "Juegos", 
+    icon: "game-controller",
+    color: "gray"
+  },{
+    key: 2,
+    name: "Valor",
+    icon: "book",
+    color: "gray"
+  },{
+    key: 3,
+    name: "Musica",
+    icon: "musical-notes",
+    color: "gray"
+  },{
+    key: 4,
+    name: "Noticias",
+    icon: "newspaper",
+    color: "gray"
+  }, {
+    key: 5,
+    name: "Entretenimiento",
+    icon: "tv",
+    color: "gray"
+  }]
+
 export const CreatePlanForm = () => {
   const [planName, setPlanName] = useState("");
   const [description, setDescription] = useState("");
@@ -118,20 +147,46 @@ export const CreatePlanForm = () => {
 
   };
 
+  const renderTrends = ({item}) => {
+    const isSelected = flag === item.name;
+
+    return (
+      <TouchableOpacity 
+        key={item.key}
+          onPress={() => setFlag(item.name)} 
+          style={[
+            styles.card, 
+            {
+                borderColor: isSelected ? "#a565f2" : item.color,
+                borderWidth: isSelected ? 0.3 : (styles.card.borderWidth || 0)
+            }
+          ]}
+      >
+          <Ionicons 
+              name={item.icon} 
+              size={19} 
+              color={isSelected ? "#a565f2" : item.color} 
+          />
+          <Text style={styles.cardText}>{item.name}</Text>
+      </TouchableOpacity>
+    );
+}
+
+
   const renderUser = ({ item }) => (
-<TouchableOpacity
-  style={styles.userCard}
-  onPress={() => {
-  setSelectedUser(item)
-  setSearchText("")
-  }}
->
-  <Image 
-    source={{ uri: item.profilePhoto }} 
-    style={styles.userImage}
-  />
-  <Text style={styles.userName}>{item.username}</Text>
-</TouchableOpacity>
+      <TouchableOpacity
+        style={styles.userCard}
+        onPress={() => {
+        setSelectedUser(item)
+        setSearchText("")
+        }}
+      >
+        <Image 
+          source={{ uri: item.profilePhoto }} 
+          style={styles.userImage}
+        />
+        <Text style={styles.userName}>{item.username}</Text>
+      </TouchableOpacity>
   );
 
   return (
@@ -181,14 +236,6 @@ export const CreatePlanForm = () => {
           onChangeText={(text) => setPlanName(text)}
 
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Que tipo de contenido es"
-          placeholderTextColor="gray"
-          value={flag}
-          onChangeText={(text) => setFlag(text)}
-
-        />
       </View>
 
       <View style={styles.inputContainer}>
@@ -201,6 +248,14 @@ export const CreatePlanForm = () => {
           multiline
         />
       </View>
+      <View style={styles.listBox}>
+          <FlatList
+          data={ITEMS}
+          renderItem={renderTrends}
+          keyExtractor={(item) => item._id}
+          numColumns={2}
+          />
+        </View>
       <Text style={styles.title}>Personalidad De Tu IA</Text>
       
       <View style={styles.inputContainer}>
@@ -507,7 +562,24 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 24,  // Aumenta el tamaño de la fuente para que sea "grande"
-  }
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 0.3,
+    borderRadius:30,
+    padding: 10,
+    margin: 10,
+    justifyContent: "space-around",
+    backgroundColor: "#252525"
+
+  },
+  cardText: {
+      marginLeft: 10,
+      fontSize: 20,
+      fontWeight: "bold",
+      color: "white"
+  },
 });
 
 //<View style={styles.inputContainerRow}>

@@ -53,7 +53,7 @@ export default function Register({navigation}) {
     useEffect(() => {
         if(result.data){
             console.log(result.data)
-            navigation.navigate('MainScreen')
+            navigation.navigate('EmailVerificationScreen', {username: formik.values.username})
         }
     }, [result.data])
 
@@ -119,7 +119,12 @@ export default function Register({navigation}) {
                          }
                          { image &&
                             <View style= { { borderRadius: 100}}>
-                                <Image  style={{alignSelf: 'center', height: 200, width: 200, borderRadius: 100}} source={{uri: image}}></Image>
+                                <Image  style={{
+                                    alignSelf: 'center', 
+                                    height: 200, 
+                                    width: 200, 
+                                    borderRadius: 100
+                                }} source={{uri: image}}></Image>
                             </View>
 
                          }

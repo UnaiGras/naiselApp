@@ -3,7 +3,6 @@ import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, Platform, K
 import { useMutation } from '@apollo/client';
 import { CREATE_CHANNEL_MUTATION } from './gestionQuerys';  // Asume que tienes esta mutación definida en otro lugar
 import * as ImagePicker from 'expo-image-picker';
-import { Button } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export const CreateChannelScreen = ({ navigation }) => {
@@ -61,7 +60,7 @@ export const CreateChannelScreen = ({ navigation }) => {
     useEffect(() => {
         if (data){
             console.log(data)
-            navigation.goback()
+            navigation.goBack()
         }
     }, [data])
 
@@ -69,7 +68,7 @@ export const CreateChannelScreen = ({ navigation }) => {
         <KeyboardAvoidingView 
             style={styles.container}
             behavior={Platform.OS === "ios" ? "padding" : "height"} 
-            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 70}
             enabled
         >
 

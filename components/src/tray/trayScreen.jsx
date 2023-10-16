@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client'; // Importa useQuery de Apollo Client
 import { Ionicons } from '@expo/vector-icons';
 // Importa la consulta GraphQL
 import { GET_USER_TRAY } from './trayQuerys'; // Asegúrate de ajustar la ruta correcta
+import { BackButton } from '../backButton';
 
 export const Inbox = ({navigation, route}) => {
   // Utiliza useQuery para realizar la consulta GraphQL
@@ -42,7 +43,10 @@ export const Inbox = ({navigation, route}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Bandeja de entrada</Text>
+      <View style={styles.titleMark}>
+        <BackButton navigation={navigation}/>
+        <Text style={styles.header}>Bandeja de entrada</Text>
+      </View>
       <FlatList
         data={mails}
         keyExtractor={(item) => item._id}
@@ -60,7 +64,7 @@ export const Inbox = ({navigation, route}) => {
               <Text style={styles.sentAt}>{item.sentAt}</Text>
             </View>
             <Text style={styles.subject}>{item.subject}</Text>
-            <Text numberOfLines={1} style={styles.messageSnippet}>{item.message}</Text>
+            <Text numberOfLines={3} style={styles.messageSnippet}>{item.message}</Text>
           </TouchableOpacity>
         )}
       />
@@ -82,8 +86,7 @@ export const Inbox = ({navigation, route}) => {
     header: {
       fontSize: 24,
       fontWeight: '500',
-      color: 'white',
-      marginBottom: 15,
+      color: 'white'
     },
     listItem: {
       padding: 10,
@@ -94,7 +97,8 @@ export const Inbox = ({navigation, route}) => {
       borderRightColor: '#3A3A3C',
       borderBottomColor: '#3A3A3C',
       marginBottom: 5,
-      borderRadius: 20
+      borderRadius: 20,
+      marginVertical: 15
     },
     mailHeader: {
       flexDirection: 'row',
@@ -118,7 +122,8 @@ export const Inbox = ({navigation, route}) => {
     subject: {
       marginTop: 5,
       color: 'white',
-      fontWeight: 'bold',
+      fontWeight: '800',
+      fontSize: 17
     },
     messageSnippet: {
       color: 'gray',
@@ -142,7 +147,14 @@ export const Inbox = ({navigation, route}) => {
       },
       shadowOpacity: 0.5,
       shadowRadius: 5,
-      elevation: 4,
+      elevation: 2,
+    },
+    titleMark: {
+      marginTop: 70,
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: 15
     }
   });
 

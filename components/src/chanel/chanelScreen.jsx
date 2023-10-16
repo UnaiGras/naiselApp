@@ -39,6 +39,7 @@ export const ChannelScreen = ({navigation, route }) => {
 
     const [lineWidth, setLineWidth] = useState(new Animated.Value(0)); // Para la línea
     const fadeAnim = useRef(new Animated.Value(0)).current; // Para la animación de fade in/out
+    const flatListRef = useRef(null);
 
 
     const { loading, error, data } = useQuery(GET_CHANEL, {
@@ -216,8 +217,8 @@ export const ChannelScreen = ({navigation, route }) => {
 
         if (item.messageType === "moment") {
             return(
-            <TouchableOpacity onPress={() => navigation.navigate('CameraComponent')} style={styles.momentMessageContainer}>
-                <Ionicons name='images' size={34} color='gray'/>
+            <TouchableOpacity onPress={() => navigation.navigate('CameraComponent', {messageId: item.id})} style={styles.momentMessageContainer}>
+                <Ionicons name='images' size={28} color='gray'/>
                 <Text style={styles.momentMessageContent}>Ver Momento</Text>
             </TouchableOpacity>
             )
@@ -284,6 +285,7 @@ export const ChannelScreen = ({navigation, route }) => {
                     <View style={{ flex: 1 }}>
                         {chanelInfo.messages?.length > 0 ? (
                                 <FlatList
+                                    ref={flatListRef}
                                     data={chanelInfo.messages}
                                     keyExtractor={(item) => item._id}
                                     renderItem={({ item }) => <MessageRenderer item={item} />}
@@ -354,15 +356,26 @@ export const ChannelScreen = ({navigation, route }) => {
                                     messageImage: contentUrl
                                })
                               
-                               sendNewMessage({ 
-                                   variables: { 
-                                    message: messageToSend, 
-                                    messageType: contentUrl ? "photo" : "basic",
-                                    messageImage: contentUrl 
-                                   } 
-                               })
-                               setMessageToSend("");
-                               setContentUrl("") // Reset the image
+                            const newMessage = {
+                                content: messageToSend, 
+                                messageType: contentUrl ? "photo" : "basic",
+                                messageImage: contentUrl
+                            };
+                           
+                            // Suponiendo que chanelInfo.messages es un array, 
+                            // crea una copia y añade el nuevo mensaje
+                            setChanelInfo(prevState => ({
+                                ...prevState,
+                                messages: [...prevState.messages, newMessage]
+                            }));
+                    
+                            setMessageToSend("");
+                            setContentUrl(""); // Reset the image
+                    
+                            // Desplaza el FlatList al último mensaje
+                            flatListRef.current.scrollToEnd({ animated: true });
+                           
+                            sendNewMessage({ variables: newMessage });
                            }}
                        >
                            <Text style={{ color: 'white' }}>Enviar</Text>
@@ -537,20 +550,21 @@ const styles = StyleSheet.create({
     },
     momentMessageContainer: {
         backgroundColor: '#252525',  // Usando el color de acento para destacarlo
-        padding: 20,
+        padding: 10,
         borderRadius: 40,
         marginVertical: 30,
         alignSelf: "flex-end",
-        maxWidth: 290,
+        width: 290,
         flexDirection: 'row',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center"
     },
     
     momentMessageContent: {
         color: 'white',
-        fontWeight: "600",  // Haciéndolo un poco más bold que los mensajes normales
-        fontSize: 19,  // Un poco más grande que el contenido normal del mensaje
-        marginHorizontal: 8,  // Espacio entre el texto y el ícono, si decides añadir uno
+        fontWeight: "600",  
+        fontSize: 17,
+        marginHorizontal: 8,
     },
     
     // Si decides añadir un ícono, deberás agregar un estilo para él también

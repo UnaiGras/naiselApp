@@ -30,6 +30,9 @@ import Inbox from "./components/src/tray/trayScreen";
 import MessageScreen from "./components/src/tray/mailView";
 import SendMailScreen from "./components/src/tray/sendMailScreen";
 import { CameraComponent } from "./components/src/chanel/momentScreen";
+import { EmailVerificationScreen } from "./components/src/login/verification";
+
+
 
 const Stack = createStackNavigator()
 
@@ -73,13 +76,7 @@ export default function Navigation() {
                     name="Register"
                     component={Register}
                     options={{
-                        headerStyle: {
-                            backgroundColor: '#151515',
-                            shadowColor: "#a565f2",
-                        },
-                        headerTitleStyle: {
-                            color: "white"
-                        }
+                        headerShown: false
                     }}
                 />
                 <Stack.Screen
@@ -340,13 +337,7 @@ export default function Navigation() {
                     name="Inbox"
                     component={Inbox}
                     options={{
-                        headerStyle: {
-                            backgroundColor: '#151515',
-                            shadowColor: "#191919",
-                        },
-                        headerTitleStyle: {
-                            color: "white"
-                        }
+                        headerShown: false
                     }}
                 />
                 <Stack.Screen
@@ -378,6 +369,19 @@ export default function Navigation() {
                 <Stack.Screen
                     name="CameraComponent"
                     component={CameraComponent}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#151515',
+                            shadowColor: "#191919",
+                        },
+                        headerTitleStyle: {
+                            color: "white"
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name="EmailVerificationScreen"
+                    component={EmailVerificationScreen}
                     options={{
                         headerStyle: {
                             backgroundColor: '#151515',

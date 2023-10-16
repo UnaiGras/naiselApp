@@ -4,7 +4,7 @@ import { Button, Input } from 'react-native-elements';
 import { useMutation } from '@apollo/client';
 import { VERIFY_EMAIL_CODE } from './loginQueries';
 
-const EmailVerificationScreen = ({ route, navigation }) => {
+export const EmailVerificationScreen = ({ route, navigation }) => {
     const { username } = route.params;
     const [code, setCode] = useState('');
 
@@ -12,7 +12,7 @@ const EmailVerificationScreen = ({ route, navigation }) => {
         onCompleted: (data) => {
             if (data.verifyEmailCode.success) {
                 Alert.alert("¡Éxito!", data.verifyEmailCode.message);
-                navigation.navigate('YourNextScreen');
+                navigation.navigate('MainScreen');
             } else {
                 Alert.alert("Error", data.verifyEmailCode.message);
             }
@@ -44,4 +44,4 @@ const EmailVerificationScreen = ({ route, navigation }) => {
     );
 };
 
-export default EmailVerificationScreen;
+

@@ -8,6 +8,8 @@ import { ADD_MOMENT_FILE } from './channelQuerys'
 
 export const CameraComponent = ({ navigation, route }) => {
 
+    const {messageId} = route.params
+
     const [hasPermission, setHasPermission] = useState(null);
     const [type, setType] = useState(Camera.Constants.Type.front);
     const [previewImage, setPreviewImage] = useState(null);
@@ -35,12 +37,12 @@ export const CameraComponent = ({ navigation, route }) => {
 
         // Llamada a la mutación para añadir el archivo a momentFiles:
         console.log({ 
-            messageId: route.params.messageId, 
+            messageId: messageId, 
             imageUrl: resData.secure_url 
         })
         addMomentFile({ 
             variables: { 
-                messageId: route.params.messageId, 
+                messageId: messageId, 
                 imageUrl: resData.secure_url 
             } 
         });
@@ -87,7 +89,16 @@ export const CameraComponent = ({ navigation, route }) => {
                         justifyContent: "center"
                     }}>
                     <TouchableOpacity
-                        style={{ flex: 0.1, bottom: 20, alignSelf: 'flex-end', alignItems: 'center', marginBottom: 20, backgroundColor: "white", padding: 20, borderRadius: 50 }}
+                        style={{ 
+                            flex: 0.1, 
+                            bottom: 20, 
+                            alignSelf: 'flex-end', 
+                            alignItems: 'center', 
+                            marginBottom: 20, 
+                            backgroundColor: "white", 
+                            padding: 20, 
+                            borderRadius: 50 
+                        }}
                         onPress={snap}>
                         <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Snap </Text>
                     </TouchableOpacity>

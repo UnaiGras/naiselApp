@@ -68,11 +68,15 @@ const ChatCard = ({item, navigation}) => {
                             source={{uri: item.plan.author.profilePhoto}}
                             />
                         
-                            <Text style={{fontSize: 20, fontWeight: "600", marginLeft: 20, color: "white"}}>{item.plan.planName}</Text>
+                            <Text
+                            numberOfLines={1}
+                            style={{fontSize: 20, fontWeight: "600", marginLeft: 20, color: "white", maxWidth: 200}}>{item.plan.planName}</Text>
                         <Text style={{fontSize: 16, fontWeight: "600", marginLeft: 20, color: "gray"}}>{item.plan.author.username}</Text>
                     </View>
                     <View style={{marginBottom: 15, marginTop: 5, marginHorizontal: 20,alignSelf: "flex-start"}}>
-                        <Text style={{color: "gray", fontSize: 14, fontWeight: "500"}}>
+                        <Text 
+                        numberOfLines={3}
+                        style={{color: "gray", fontSize: 14, fontWeight: "500"}}>
                             {item.plan.description}
                         </Text>
                     </View>
